@@ -54,28 +54,47 @@
   }
 
   .dark {
-    --background: 240 6% 8%;
-    --foreground: 42 67% 98%;
-    --card: 240 6% 12%;
-    --card-foreground: 42 67% 98%;
-    --popover: 240 6% 12%;
-    --popover-foreground: 42 67% 98%;
-    --primary: 45 100% 58%;
-    --primary-foreground: 240 4% 12%;
-    --secondary: 240 6% 16%;
-    --secondary-foreground: 42 67% 98%;
-    --muted: 240 6% 16%;
-    --muted-foreground: 42 30% 80%;
-    --accent: 45 100% 58%;
-    --accent-foreground: 240 4% 12%;
-    --destructive: 33 100% 50%;
+    --background: 240 8% 6%;          /* deep neutral */
+    --foreground: 42 30% 96%;         /* warm near-white */
+
+    --card: 240 6% 14%;               /* clearly elevated above bg */
+    --card-foreground: 42 30% 96%;
+
+    --popover: 240 6% 14%;
+    --popover-foreground: 42 30% 96%;
+
+    --primary: 45 100% 60%;
+    --primary-foreground: 240 8% 8%;
+
+    --secondary: 240 6% 18%;
+    --secondary-foreground: 42 30% 96%;
+
+    --muted: 240 6% 18%;
+    --muted-foreground: 42 20% 75%;   /* readable soft text */
+
+    --accent: 45 100% 60%;
+    --accent-foreground: 240 8% 8%;
+
+    --destructive: 33 100% 55%;
     --destructive-foreground: 0 0% 100%;
-    --border: 240 6% 20%;
-    --input: 240 6% 20%;
-    --ring: 45 100% 58%;
-    --surface: 240 6% 16%;
-    --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.4);
+
+    --border: 240 6% 26%;             /* visible separators */
+    --input: 240 6% 26%;
+    --ring: 45 100% 60%;
+
+    /* Wakey custom tokens — dark */
+    --cream: 240 8% 6%;
+    --yellow: 45 100% 60%;
+    --yellow-soft: 45 40% 22%;        /* dark amber tint instead of cream */
+    --orange: 33 100% 55%;
+    --ink: 42 30% 96%;                /* invert ink so text-ink stays readable */
+    --soft-ink: 42 30% 96%;
+    --surface: 240 6% 18%;
+
+    --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.5);
   }
+
+  .dark .text-soft { color: hsl(var(--ink) / 0.65); }
 }
 
 @layer base {
