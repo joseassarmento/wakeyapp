@@ -1,7 +1,12 @@
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { UserProfile } from "@/lib/wakey-storage";
 
 type TabId = "global" | "friends";
+
+interface RankScreenProps {
+  user?: UserProfile;
+}
 
 interface Player {
   id: number;
