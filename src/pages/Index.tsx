@@ -302,6 +302,11 @@ const Index = () => {
           onContinue={() => {
             setSuccess(null);
             setTab("alarm");
+            // If we arrived via ?stopped=true, clean the URL so refreshes
+            // don't keep re-triggering the success screen.
+            if (window.location.search) {
+              window.history.replaceState(null, "", window.location.pathname);
+            }
           }}
         />
       )}
