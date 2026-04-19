@@ -87,7 +87,7 @@ const RankSection = ({ mornings }: { mornings: number }) => {
           <div
             className="relative flex items-center justify-center"
             style={{
-              height: 220,
+              height: 300,
               backgroundColor: `${current.color}26`, // 15% opacity
             }}
           >
@@ -106,10 +106,10 @@ const RankSection = ({ mornings }: { mornings: number }) => {
                 src={current.image}
                 alt={`${current.name} mascot`}
                 className="object-contain"
-                style={{ height: 200 }}
+                style={{ height: 280 }}
               />
             ) : (
-              <Mascot size={170} />
+              <Mascot size={240} />
             )}
           </div>
           <div className="p-5">
