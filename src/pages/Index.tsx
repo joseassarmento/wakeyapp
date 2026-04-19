@@ -42,6 +42,7 @@ const Index = () => {
 
   const [firing, setFiring] = useState<Alarm | null>(null);
   const [success, setSuccess] = useState<{ time: string } | null>(null);
+  const [unlockQueue, setUnlockQueue] = useState<Rank[]>([]);
 
   const [progress, setProgress] = useState<ProgressData>(() => loadProgress());
   const [user, setUser] = useState<UserProfile>(() => loadUser());
