@@ -48,6 +48,7 @@ const Index = () => {
   const [user, setUser] = useState<UserProfile>(() => loadUser());
 
   const lastFireKeyRef = useRef<string | null>(null);
+  const pendingSuccessRef = useRef<{ time: string } | null>(null);
 
   // SEO basics
   useEffect(() => {
