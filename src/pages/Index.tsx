@@ -8,6 +8,7 @@ import MeScreen from "@/components/wakey/MeScreen";
 import AlarmFiring from "@/components/wakey/AlarmFiring";
 import AlarmSuccess from "@/components/wakey/AlarmSuccess";
 import RankUnlock from "@/components/wakey/RankUnlock";
+import UsernameSetup from "@/components/wakey/UsernameSetup";
 import { Rank, detectNewUnlocks } from "@/lib/wakey-ranks";
 import {
   Alarm,
@@ -197,6 +198,15 @@ const Index = () => {
   // Demo trigger — fires the first active alarm or a placeholder
   const triggerDemo = () =>
     setFiring(alarms.find((a) => a.active) ?? alarms[0] ?? blankAlarm());
+
+  // First-launch onboarding gate: require a username before entering the app
+  if (!user.username) {
+    return (
+      <UsernameSetup
+        onComplete={(name, username) => setUser({ ...user, name, username })}
+      />
+    );
+  }
 
   return (
     <div className="bg-background min-h-screen">

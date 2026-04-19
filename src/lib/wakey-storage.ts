@@ -21,6 +21,8 @@ export interface ProgressData {
 
 export interface UserProfile {
   name: string;
+  /** Unique handle, lowercase, no @ prefix stored */
+  username: string;
   notifications: boolean;
   darkMode: boolean;
   podPaired: boolean;
@@ -50,7 +52,8 @@ const DEFAULT_PROGRESS: ProgressData = {
 };
 
 const DEFAULT_USER: UserProfile = {
-  name: "Pablo",
+  name: "",
+  username: "",
   notifications: true,
   darkMode: false,
   podPaired: false,
@@ -138,6 +141,59 @@ export const loadUser = (): UserProfile => {
 };
 export const saveUser = (u: UserProfile) =>
   localStorage.setItem(KEY_USER, JSON.stringify(u));
+
+// ---------- Friends ----------
+const KEY_FRIENDS = "wakey_friends";
+
+export const loadFriends = (): string[] => {
+  try {
+    const raw = localStorage.getItem(KEY_FRIENDS);
+    if (!raw) return [];
+    const arr = JSON.parse(raw);
+    return Array.isArray(arr) ? (arr as string[]) : [];
+  } catch {
+    return [];
+  }
+};
+
+export const saveFriends = (usernames: string[]) =>
+  localStorage.setItem(KEY_FRIENDS, JSON.stringify(usernames));
+
+// ---------- Username helpers ----------
+export const TAKEN_USERNAMES = [
+  "wakey",
+  "admin",
+  "test",
+  "user",
+  "pablo",
+  "jose",
+  "timothy",
+];
+
+export const USERNAME_REGEX = /^[a-z0-9_]+$/;
+
+export type UsernameStatus =
+  | "idle"
+  | "checking"
+  | "available"
+  | "taken"
+  | "invalid";
+
+export interface DemoUser {
+  name: string;
+  username: string;
+  mornings: number;
+}
+
+export const DEMO_USERS: DemoUser[] = [
+  { name: "Jose Sarmento", username: "jose_wakey", mornings: 47 },
+  { name: "Timothy Hawks", username: "tim_rises", mornings: 31 },
+  { name: "Chris Martin", username: "chris_am", mornings: 52 },
+  { name: "Ana Pereira", username: "ana_early", mornings: 28 },
+  { name: "Lucas Mendes", username: "lucas_sun", mornings: 19 },
+  { name: "Sofia Andrade", username: "sofia_wakes", mornings: 63 },
+  { name: "Miguel Torres", username: "miguel_rise", mornings: 8 },
+];
 
 // Helpers
 export const formatTime12 = (time: string) => {
