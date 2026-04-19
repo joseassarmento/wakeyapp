@@ -54,6 +54,7 @@ const DEFAULT_USER: UserProfile = {
   notifications: true,
   darkMode: false,
   podPaired: false,
+  avatar: "",
 };
 
 const DEFAULT_ALARMS: Alarm[] = [
