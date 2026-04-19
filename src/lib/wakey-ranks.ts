@@ -2,6 +2,7 @@ import rank1Snoozer from "@/assets/rank-1-snoozer.png";
 import rank2Waker from "@/assets/rank-2-waker.png";
 import rank3Riser from "@/assets/rank-3-riser.png";
 import rank4EarlyBird from "@/assets/rank-4-early-bird.png";
+import rank5SunChaser from "@/assets/rank-5-sun-chaser.png";
 
 export interface Rank {
   id: number;
@@ -64,6 +65,7 @@ export const RANKS: Rank[] = [
     color: "#FF6D00",
     message: "100 mornings. You are not the same person.",
     unlockMessage: "100 mornings. You've changed.",
+    image: rank5SunChaser,
   },
   {
     id: 6,
