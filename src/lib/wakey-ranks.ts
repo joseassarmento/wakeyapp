@@ -21,6 +21,7 @@ export const RANKS: Rank[] = [
     color: "#C0C0C0",
     message: "Still in bed. The pod is waiting.",
     unlockMessage: "Welcome to Wakey.",
+    image: rank1Snoozer,
   },
   {
     id: 2,
