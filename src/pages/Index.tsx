@@ -120,6 +120,11 @@ const Index = () => {
   useEffect(() => saveProgress(progress), [progress]);
   useEffect(() => saveUser(user), [user]);
 
+  // Apply dark mode class on <html> from the user preference
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", !!user.darkMode);
+  }, [user.darkMode]);
+
   // Normalize weekly heatmap on mount: past days not "done" become "missed",
   // today stays "today" unless already done, future days stay "future".
   // Recompute streak from the cleaned array.
