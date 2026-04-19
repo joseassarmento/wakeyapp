@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Pencil, ChevronRight } from "lucide-react";
+import { useRef, useState } from "react";
+import { Pencil, ChevronRight, Camera } from "lucide-react";
 import { UserProfile, ProgressData } from "@/lib/wakey-storage";
 
 interface MeScreenProps {
