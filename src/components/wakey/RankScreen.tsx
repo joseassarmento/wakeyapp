@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import { UserProfile } from "@/lib/wakey-storage";
+import { UserProfile, ProgressData } from "@/lib/wakey-storage";
 
 type TabId = "global" | "friends";
 
 interface RankScreenProps {
   user?: UserProfile;
+  progress?: ProgressData;
 }
 
 interface Player {
@@ -18,14 +19,14 @@ const GLOBAL_BASE: Player[] = [
   { id: 1, name: "Aiko Tanaka", mornings: 412 },
   { id: 2, name: "Marco Reyes", mornings: 388 },
   { id: 3, name: "Lena Park", mornings: 356 },
-  { id: 4, name: "__ME__", mornings: 47 },
+  { id: 4, name: "__ME__", mornings: 0 },
   { id: 5, name: "Sara Ali", mornings: 41 },
   { id: 6, name: "Theo N.", mornings: 33 },
   { id: 7, name: "Mei Lin", mornings: 28 },
 ];
 
 const FRIENDS_BASE: Player[] = [
-  { id: 1, name: "__ME__", mornings: 47 },
+  { id: 1, name: "__ME__", mornings: 0 },
   { id: 2, name: "Sara Ali", mornings: 41 },
   { id: 3, name: "Theo N.", mornings: 33 },
   { id: 4, name: "Jamie K.", mornings: 19 },
@@ -34,12 +35,15 @@ const FRIENDS_BASE: Player[] = [
 const initials = (name: string) =>
   name.split(" ").map((p) => p[0]).slice(0, 2).join("").toUpperCase();
 
-export const RankScreen = ({ user }: RankScreenProps = {}) => {
+export const RankScreen = ({ user, progress }: RankScreenProps = {}) => {
   const [tab, setTab] = useState<TabId>("global");
   const meName = (user?.name?.trim() || "You");
+  const myMornings = progress?.totalMornings ?? 0;
   const resolve = (p: Player): Player =>
-    p.name === "__ME__" ? { ...p, name: meName } : p;
-  const list = (tab === "global" ? GLOBAL_BASE : FRIENDS_BASE).map(resolve);
+    p.name === "__ME__" ? { ...p, name: meName, mornings: myMornings } : p;
+  const list = (tab === "global" ? GLOBAL_BASE : FRIENDS_BASE)
+    .map(resolve)
+    .sort((a, b) => b.mornings - a.mornings);
   const total = list.reduce((s, p) => s + p.mornings, 0);
 
   return (
