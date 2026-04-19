@@ -72,7 +72,7 @@ export const MeScreen = ({ user, onUserChange, progress }: MeScreenProps) => {
           ) : (
             initial
           )}
-          <span className="absolute bottom-0 right-0 w-6 h-6 rounded-full bg-ink text-card flex items-center justify-center shadow-card">
+          <span className="absolute left-1/2 -translate-x-1/2 bottom-1 w-6 h-6 rounded-full bg-ink text-card flex items-center justify-center shadow-card">
             <Camera size={12} />
           </span>
         </button>
