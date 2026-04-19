@@ -1,5 +1,6 @@
 import rank1Snoozer from "@/assets/rank-1-snoozer.png";
 import rank2Waker from "@/assets/rank-2-waker.png";
+import rank3Riser from "@/assets/rank-3-riser.png";
 
 export interface Rank {
   id: number;
@@ -42,6 +43,7 @@ export const RANKS: Rank[] = [
     color: "#FFB300",
     message: "The alarm doesn't scare you anymore.",
     unlockMessage: "The habit is forming. Don't stop.",
+    image: rank3Riser,
   },
   {
     id: 4,
