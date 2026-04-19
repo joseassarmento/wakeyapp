@@ -134,12 +134,18 @@ const Index = () => {
     const h12 = h % 12 === 0 ? 12 : h % 12;
     const label = `${h12}:${now.getMinutes().toString().padStart(2, "0")} ${period}`;
     const newTotal = progress.totalMornings + 1;
-    setProgress((p) => ({
-      ...p,
-      totalMornings: p.totalMornings + 1,
-      streak: p.streak + 1,
-      lastWakeISO: now.toISOString(),
-    }));
+    const ourDay = (now.getDay() + 6) % 7; // 0=Mon..6=Sun
+    setProgress((p) => {
+      const weekly = [...p.weekly];
+      weekly[ourDay] = "done";
+      return {
+        ...p,
+        totalMornings: p.totalMornings + 1,
+        streak: p.streak + 1,
+        lastWakeISO: now.toISOString(),
+        weekly,
+      };
+    });
     setFiring(null);
 
     // Detect any newly unlocked ranks based on the new total
