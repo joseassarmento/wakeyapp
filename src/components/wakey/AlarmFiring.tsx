@@ -73,7 +73,7 @@ export const AlarmFiring = ({
       <div className="flex flex-col items-center gap-8">
         <Mascot variant="sleepy" size={300} />
         <h1
-          className="text-ink text-center animate-pulse-soft"
+          className="text-ink text-center"
           style={{ fontSize: 32, fontWeight: 600 }}
         >
           Wake up!
