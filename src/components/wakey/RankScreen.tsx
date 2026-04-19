@@ -210,7 +210,7 @@ const LeaderboardList = ({
   list: Player[];
   userAvatar?: string;
 }) => (
-  <ul className="space-y-2.5">
+  <ul className="space-y-2.5 animate-fade-in">
     {list.map((p, i) => {
       const rank = i + 1;
       const isFirst = rank === 1;
@@ -218,10 +218,11 @@ const LeaderboardList = ({
         <li
           key={p.id}
           className={cn(
-            "rounded-[16px] shadow-card flex items-center gap-3 px-4 py-3",
+            "rounded-[16px] shadow-card flex items-center gap-3 px-4 py-3 animate-slide-up transition-smooth",
             isFirst ? "bg-yellow" : "bg-card",
             p.isMe && !isFirst && "ring-2 ring-yellow",
           )}
+          style={{ animationDelay: `${Math.min(i, 6) * 40}ms` }}
         >
           <div
             className="w-7 text-center text-ink/70"
@@ -284,9 +285,10 @@ const FriendsLeaderboard = ({
             onPointerLeave={endPress}
             onPointerCancel={endPress}
             className={cn(
-              "rounded-[16px] shadow-card bg-card flex items-center gap-3 px-4 py-3 select-none",
+              "rounded-[16px] shadow-card bg-card flex items-center gap-3 px-4 py-3 select-none animate-slide-up transition-smooth",
               p.isMe && "ring-2 ring-yellow",
             )}
+            style={{ animationDelay: `${Math.min(i, 6) * 40}ms` }}
           >
             <div
               className="w-7 text-center text-ink/70"
