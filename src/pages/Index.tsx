@@ -7,6 +7,8 @@ import ProgressScreen from "@/components/wakey/ProgressScreen";
 import MeScreen from "@/components/wakey/MeScreen";
 import AlarmFiring from "@/components/wakey/AlarmFiring";
 import AlarmSuccess from "@/components/wakey/AlarmSuccess";
+import RankUnlock from "@/components/wakey/RankUnlock";
+import { Rank, detectNewUnlocks } from "@/lib/wakey-ranks";
 import {
   Alarm,
   loadAlarms,
