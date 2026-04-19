@@ -79,6 +79,28 @@ const Index = () => {
   useEffect(() => saveProgress(progress), [progress]);
   useEffect(() => saveUser(user), [user]);
 
+  // Normalize weekly heatmap on mount: past days not "done" become "missed",
+  // today stays "today" unless already done, future days stay "future".
+  // Recompute streak from the cleaned array.
+  useEffect(() => {
+    const now = new Date();
+    const ourDay = (now.getDay() + 6) % 7; // 0=Mon..6=Sun
+    setProgress((p) => {
+      const weekly = [...p.weekly] as ProgressData["weekly"];
+      for (let i = 0; i < 7; i++) {
+        if (i < ourDay && weekly[i] !== "done") weekly[i] = "missed";
+        else if (i === ourDay && weekly[i] !== "done") weekly[i] = "today";
+        else if (i > ourDay) weekly[i] = "future";
+      }
+      let streak = 0;
+      for (let i = ourDay; i >= 0; i--) {
+        if (weekly[i] === "done") streak++;
+        else if (weekly[i] === "missed") break;
+      }
+      return { ...p, weekly, streak };
+    });
+  }, []);
+
   // Alarm check loop
   useEffect(() => {
     const check = () => {
