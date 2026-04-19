@@ -6,6 +6,7 @@ interface AlarmFiringProps {
   onSuccess: () => void;
   onEmergencyExit?: () => void;
   emergencyExitsLeft: number;
+  alarmName?: string;
 }
 
 type ScanState = "idle" | "scanning" | "unsupported";
@@ -14,6 +15,7 @@ export const AlarmFiring = ({
   onSuccess,
   onEmergencyExit,
   emergencyExitsLeft,
+  alarmName,
 }: AlarmFiringProps) => {
   const [state, setState] = useState<ScanState>("idle");
   const [error, setError] = useState<string | null>(null);
