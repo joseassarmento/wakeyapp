@@ -9,7 +9,20 @@ import AlarmFiring from "@/components/wakey/AlarmFiring";
 import AlarmSuccess from "@/components/wakey/AlarmSuccess";
 import RankUnlock from "@/components/wakey/RankUnlock";
 import UsernameSetup from "@/components/wakey/UsernameSetup";
+import { stopAlarmSound } from "@/lib/wakey-audio";
 import { Rank, detectNewUnlocks } from "@/lib/wakey-ranks";
+
+// Detect NFC-pod redirect (?stopped=true) at module load, before render.
+// This guarantees any in-flight alarm audio is silenced immediately and the
+// app boots straight into the success screen.
+const STOPPED_FROM_URL = (() => {
+  if (typeof window === "undefined") return false;
+  const params = new URLSearchParams(window.location.search);
+  return params.get("stopped") === "true";
+})();
+if (STOPPED_FROM_URL) {
+  stopAlarmSound();
+}
 import {
   Alarm,
   loadAlarms,
