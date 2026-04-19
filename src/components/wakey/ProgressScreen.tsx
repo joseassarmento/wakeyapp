@@ -1,6 +1,7 @@
-import { Check, X, ArrowUp } from "lucide-react";
+import { Check, X, ArrowUp, Lock } from "lucide-react";
 import Mascot from "./Mascot";
 import { ProgressData, UserProfile } from "@/lib/wakey-storage";
+import { RANKS, getRank, getNextRank } from "@/lib/wakey-ranks";
 
 const DAYS = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
 
