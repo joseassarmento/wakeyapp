@@ -260,6 +260,23 @@ const Index = () => {
     pendingSuccessRef.current = { time: label };
   };
 
+  const firingRef = useRef<Alarm | null>(null);
+  firingRef.current = firing;
+  const handleSuccessRef = useRef(handleSuccess);
+  handleSuccessRef.current = handleSuccess;
+
+  useEffect(() => {
+    window.stopAlarm = () => {
+      stopAlarmSound();
+      if (firingRef.current) {
+        handleSuccessRef.current();
+      }
+    };
+    return () => {
+      delete window.stopAlarm;
+    };
+  }, []);
+
   const handleEmergency = () => {
     setProgress((p) => ({
       ...p,

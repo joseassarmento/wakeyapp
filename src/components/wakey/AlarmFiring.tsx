@@ -41,21 +41,19 @@ export const AlarmFiring = ({
     setTimeout(onSuccess, 380);
   };
 
-  const handleWakey = async () => {
+  const handleWakey = () => {
     setError(null);
-    if (!("NDEFReader" in window)) {
+    const bridge = window.webkit?.messageHandlers?.startNFC;
+    if (!bridge || typeof bridge.postMessage !== "function") {
       setState("unsupported");
       return;
     }
     setState("scanning");
     try {
-      // @ts-expect-error - NDEFReader typing
-      const reader = new NDEFReader();
-      await reader.scan();
-      reader.onreading = () => finish();
-      reader.onreadingerror = () => setError("Couldn't read tag. Try again.");
-    } catch (e: any) {
-      setError(e?.message || "NFC failed.");
+      bridge.postMessage({});
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : "NFC failed.";
+      setError(msg);
       setState("unsupported");
     }
   };
@@ -125,7 +123,7 @@ export const AlarmFiring = ({
         {state === "unsupported" && (
           <div className="w-full bg-card rounded-[24px] p-5 text-center space-y-3 shadow-card">
             <p className="text-ink" style={{ fontSize: 15, fontWeight: 500 }}>
-              NFC not supported on this browser.
+              NFC is not available here.
             </p>
             <p className="text-soft" style={{ fontSize: 13 }}>
               {error || "Tap to dismiss anyway."}
@@ -143,7 +141,7 @@ export const AlarmFiring = ({
                 className="press text-soft"
                 style={{ fontSize: 13 }}
               >
-                Try NFC again
+                Try again
               </button>
             </div>
           </div>
