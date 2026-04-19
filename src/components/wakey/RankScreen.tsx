@@ -84,12 +84,6 @@ export const RankScreen = () => {
               >
                 {rank}
               </div>
-              <div
-                className="w-[38px] h-[38px] rounded-full bg-surface flex items-center justify-center text-ink"
-                style={{ fontSize: 13, fontWeight: 500 }}
-              >
-                {initials(p.name)}
-              </div>
               <div className="flex-1 text-ink" style={{ fontSize: 15, fontWeight: 500 }}>
                 {p.name}
               </div>
