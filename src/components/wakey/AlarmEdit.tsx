@@ -208,6 +208,15 @@ export const AlarmEdit = ({
         )}
       </div>
 
+      {/* Time picker bottom sheet */}
+      {timeOpen && (
+        <TimePickerSheet
+          value={draft.time}
+          onConfirm={(v) => setDraft((s) => ({ ...s, time: v }))}
+          onClose={() => setTimeOpen(false)}
+        />
+      )}
+
       {/* Ringtone bottom sheet */}
       {ringtoneOpen && (
         <RingtoneSheet
