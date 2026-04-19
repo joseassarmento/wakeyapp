@@ -67,16 +67,22 @@ const Index = () => {
   );
 
   const [firing, setFiring] = useState<Alarm | null>(null);
-  const [success, setSuccess] = useState<{ time: string } | null>(() => {
-    if (!STOPPED_FROM_URL) return null;
-    const now = new Date();
-    const h = now.getHours();
-    const period = h >= 12 ? "PM" : "AM";
-    const h12 = h % 12 === 0 ? 12 : h % 12;
-    return {
-      time: `${h12}:${now.getMinutes().toString().padStart(2, "0")} ${period}`,
-    };
-  });
+  // Defer the success screen briefly when arriving via ?stopped=true so the
+  // BroadcastChannel "stop" message has time to reach the original alarm tab.
+  const [success, setSuccess] = useState<{ time: string } | null>(null);
+  useEffect(() => {
+    if (!STOPPED_FROM_URL) return;
+    const t = window.setTimeout(() => {
+      const now = new Date();
+      const h = now.getHours();
+      const period = h >= 12 ? "PM" : "AM";
+      const h12 = h % 12 === 0 ? 12 : h % 12;
+      setSuccess({
+        time: `${h12}:${now.getMinutes().toString().padStart(2, "0")} ${period}`,
+      });
+    }, 300);
+    return () => clearTimeout(t);
+  }, []);
   const [unlockQueue, setUnlockQueue] = useState<Rank[]>([]);
 
   const [progress, setProgress] = useState<ProgressData>(() => loadProgress());
