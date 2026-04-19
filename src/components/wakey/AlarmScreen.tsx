@@ -64,9 +64,7 @@ export const AlarmScreen = () => {
     <div className="pb-32 animate-fade-in">
       {/* Mascot section */}
       <div className="pt-6 pb-2 flex justify-center">
-        <div className="animate-float">
-          <Mascot variant="happy" size={260} />
-        </div>
+        <Mascot variant="happy" size={260} />
       </div>
 
       <div className="px-5 space-y-4">

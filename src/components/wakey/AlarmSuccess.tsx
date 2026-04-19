@@ -28,9 +28,7 @@ export const AlarmSuccess = ({ streak, wakeTimeLabel, onContinue }: AlarmSuccess
       <div />
 
       <div className="flex flex-col items-center gap-6 text-center">
-        <div className="animate-bounce-soft">
-          <Mascot variant="walking" size={280} />
-        </div>
+        <Mascot variant="walking" size={280} />
         <h1 className="text-ink" style={{ fontSize: 40, fontWeight: 600, letterSpacing: "-1px" }}>
           Morning saved!
         </h1>
