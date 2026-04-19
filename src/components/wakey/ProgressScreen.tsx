@@ -18,7 +18,7 @@ const motivational = (streak: number) => {
 };
 
 export const ProgressScreen = ({ progress, user }: ProgressScreenProps) => {
-  const greeting = `Good morning, ${user.name}!`;
+  const greeting = `Wakey wakey, ${user.name}!`;
   return (
     <div className="pb-32 px-5 pt-6 animate-fade-in">
       <h1 className="text-ink mb-5" style={{ fontSize: 26, fontWeight: 600 }}>
