@@ -1,3 +1,5 @@
+import rank1Snoozer from "@/assets/rank-1-snoozer.png";
+
 export interface Rank {
   id: number;
   name: string;
@@ -6,6 +8,8 @@ export interface Rank {
   color: string;
   message: string;
   unlockMessage: string;
+  /** Optional custom mascot image — falls back to default Mascot if absent */
+  image?: string;
 }
 
 export const RANKS: Rank[] = [
