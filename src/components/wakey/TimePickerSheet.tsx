@@ -41,18 +41,27 @@ const Wheel = ({
 }) => {
   const ref = useRef<HTMLDivElement | null>(null);
   const settleRef = useRef<number | null>(null);
+  const isShortList = items.length <= 2;
+
+  useEffect(() => {
+    return () => {
+      if (settleRef.current) window.clearTimeout(settleRef.current);
+    };
+  }, []);
 
   // Sync external index → scroll position
   useEffect(() => {
+    if (isShortList) return;
     const el = ref.current;
     if (!el) return;
     const target = index * ITEM_H;
     if (Math.abs(el.scrollTop - target) > 1) {
       el.scrollTo({ top: target, behavior: "auto" });
     }
-  }, [index]);
+  }, [index, isShortList]);
 
   const handleScroll = () => {
+    if (isShortList) return;
     const el = ref.current;
     if (!el) return;
     if (settleRef.current) window.clearTimeout(settleRef.current);
@@ -67,12 +76,41 @@ const Wheel = ({
   };
 
   const handleItemClick = (i: number) => {
+    if (isShortList) {
+      onChange(i);
+      return;
+    }
+
     const el = ref.current;
     if (el) {
-      el.scrollTo({ top: i * ITEM_H, behavior: "smooth" });
+      el.scrollTo({ top: i * ITEM_H, behavior: "auto" });
     }
     onChange(i);
   };
+
+  if (isShortList) {
+    return (
+      <div className="relative flex-1 overflow-hidden" style={{ height: ITEM_H * 5 }}>
+        {items.map((v, i) => (
+          <button
+            key={i}
+            type="button"
+            className="absolute left-0 right-0 flex items-center justify-center text-ink transition-opacity duration-150"
+            style={{
+              top: ITEM_H * 2 + (i - index) * ITEM_H,
+              height: ITEM_H,
+              fontSize: 26,
+              fontWeight: 600,
+              opacity: i === index ? 1 : 0.35,
+            }}
+            onClick={() => handleItemClick(i)}
+          >
+            {format ? format(v) : v}
+          </button>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div
