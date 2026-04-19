@@ -1,5 +1,5 @@
-import { useRef, useState } from "react";
-import { Pencil, ChevronRight, Camera, Lock } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Pencil, ChevronRight, Camera, Lock, Moon } from "lucide-react";
 import { UserProfile, ProgressData } from "@/lib/wakey-storage";
 
 interface MeScreenProps {
@@ -12,6 +12,11 @@ export const MeScreen = ({ user, onUserChange, progress }: MeScreenProps) => {
   const [editing, setEditing] = useState(false);
   const [tempName, setTempName] = useState(user.name);
   const fileRef = useRef<HTMLInputElement | null>(null);
+
+  // Sync the dark class on <html> with the user's preference
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", !!user.darkMode);
+  }, [user.darkMode]);
 
   const initial = user.name.charAt(0).toUpperCase() || "W";
 
@@ -164,7 +169,22 @@ export const MeScreen = ({ user, onUserChange, progress }: MeScreenProps) => {
             />
           }
         />
-        
+
+        <Row
+          label={
+            <span className="flex items-center gap-2">
+              <Moon size={15} className="text-ink/55" />
+              Dark mode
+            </span>
+          }
+          right={
+            <Toggle
+              on={user.darkMode}
+              onChange={(v) => onUserChange({ ...user, darkMode: v })}
+            />
+          }
+        />
+
         <Row
           label="Pod pairing"
           right={
@@ -198,7 +218,7 @@ export const MeScreen = ({ user, onUserChange, progress }: MeScreenProps) => {
   );
 };
 
-const Row = ({ label, right }: { label: string; right: React.ReactNode }) => (
+const Row = ({ label, right }: { label: React.ReactNode; right: React.ReactNode }) => (
   <div className="bg-card rounded-[16px] shadow-card flex items-center justify-between px-5 py-4">
     <span className="text-ink" style={{ fontSize: 15, fontWeight: 500 }}>
       {label}
