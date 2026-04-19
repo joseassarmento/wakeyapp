@@ -178,6 +178,68 @@ export const MeScreen = ({ user, onUserChange, progress }: MeScreenProps) => {
         </div>
       )}
 
+      {/* Email field */}
+      <div className="bg-card rounded-[16px] shadow-card px-5 py-4 mb-2 animate-slide-up stagger-1">
+        <div className="flex items-center justify-between mb-1">
+          <span
+            className="text-ink/45"
+            style={{
+              fontSize: 10,
+              fontWeight: 500,
+              letterSpacing: "0.5px",
+              textTransform: "uppercase",
+            }}
+          >
+            Email
+          </span>
+          {emailSaved && (
+            <span
+              className="flex items-center gap-1 text-[hsl(140_60%_45%)]"
+              style={{ fontSize: 11, fontWeight: 500 }}
+            >
+              <Check size={12} strokeWidth={3} /> Saved
+            </span>
+          )}
+        </div>
+        <div className="flex items-center gap-2">
+          <Mail size={16} className="text-ink/40 shrink-0" />
+          <input
+            type="email"
+            inputMode="email"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
+            value={tempEmail}
+            onChange={(e) => setTempEmail(e.target.value)}
+            onBlur={saveEmail}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                (e.target as HTMLInputElement).blur();
+              }
+            }}
+            placeholder="you@example.com"
+            className="flex-1 bg-transparent outline-none text-ink placeholder:text-ink/35"
+            style={{ fontSize: 16, fontWeight: 500 }}
+          />
+        </div>
+        {tempEmail.trim() !== "" && !emailValid && (
+          <span
+            className="text-orange mt-1 block"
+            style={{ fontSize: 12, fontWeight: 500 }}
+          >
+            Enter a valid email address
+          </span>
+        )}
+        {tempEmail.trim() === "" && (
+          <span
+            className="text-ink/40 mt-1 block"
+            style={{ fontSize: 12, fontWeight: 400 }}
+          >
+            Used for account recovery and notifications
+          </span>
+        )}
+      </div>
+
       <div className="space-y-2 animate-slide-up stagger-2">
         <Row
           label="Notifications"
