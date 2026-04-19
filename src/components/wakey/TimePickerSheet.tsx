@@ -97,7 +97,7 @@ const Wheel = ({
             opacity: i === index ? 1 : 0.35,
             transition: "opacity 150ms",
           }}
-          onClick={() => onChange(i)}
+          onClick={() => handleItemClick(i)}
         >
           {format ? format(v) : v}
         </div>
