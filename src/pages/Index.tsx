@@ -9,7 +9,7 @@ import AlarmFiring from "@/components/wakey/AlarmFiring";
 import AlarmSuccess from "@/components/wakey/AlarmSuccess";
 import RankUnlock from "@/components/wakey/RankUnlock";
 import UsernameSetup from "@/components/wakey/UsernameSetup";
-import { stopAlarmSound } from "@/lib/wakey-audio";
+import { primeAudio, stopAlarmSound } from "@/lib/wakey-audio";
 import { Rank, detectNewUnlocks } from "@/lib/wakey-ranks";
 
 // Detect NFC-pod redirect (?stopped=true) at module load, before render.
@@ -220,9 +220,13 @@ const Index = () => {
     }));
   };
 
-  // Demo trigger — fires the first active alarm or a placeholder
-  const triggerDemo = () =>
+  // Demo trigger — fires the first active alarm or a placeholder.
+  // primeAudio() runs synchronously inside the click so the browser
+  // grants AudioContext permission via the user gesture.
+  const triggerDemo = () => {
+    primeAudio();
     setFiring(alarms.find((a) => a.active) ?? alarms[0] ?? blankAlarm());
+  };
 
   // First-launch onboarding gate: require a username before entering the app.
   // Skip when arriving via NFC pod redirect so the success screen always wins.
