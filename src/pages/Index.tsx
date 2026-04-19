@@ -213,6 +213,22 @@ const Index = () => {
         />
       )}
 
+      {unlockQueue.length > 0 && (
+        <RankUnlock
+          rank={unlockQueue[0]}
+          onContinue={() => {
+            setUnlockQueue((q) => {
+              const next = q.slice(1);
+              if (next.length === 0 && pendingSuccessRef.current) {
+                setSuccess(pendingSuccessRef.current);
+                pendingSuccessRef.current = null;
+              }
+              return next;
+            });
+          }}
+        />
+      )}
+
       {success && (
         <AlarmSuccess
           streak={progress.streak}
