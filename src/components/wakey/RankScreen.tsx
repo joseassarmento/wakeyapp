@@ -454,50 +454,69 @@ const RemoveConfirmSheet = ({
   username: string;
   onCancel: () => void;
   onConfirm: () => void;
-}) => (
-  <div className="fixed inset-0 z-[70] flex items-end justify-center">
+}) => {
+  const [entered, setEntered] = useState(false);
+  useEffect(() => {
+    requestAnimationFrame(() => setEntered(true));
+  }, []);
+  const close = () => {
+    setEntered(false);
+    setTimeout(onCancel, 280);
+  };
+  const confirm = () => {
+    setEntered(false);
+    setTimeout(onConfirm, 280);
+  };
+  return (
     <div
-      className="absolute inset-0 bg-ink/40 animate-fade-in"
-      onClick={onCancel}
-      aria-hidden
-    />
-    <div
-      className="relative w-full max-w-[430px] bg-card rounded-t-[28px] shadow-card pb-8 animate-slide-in-right"
-      style={{ animation: "slide-in-bottom 280ms ease-out" }}
+      className={cn(
+        "fixed inset-0 z-[70] flex items-end justify-center transition-opacity duration-[280ms]",
+        entered ? "opacity-100" : "opacity-0",
+      )}
     >
-      <div className="flex justify-center pt-3 pb-1">
-        <span className="block w-10 h-1 rounded-full bg-ink/15" />
-      </div>
-      <h3
-        className="text-ink px-5 pt-3 pb-2 text-center"
-        style={{ fontSize: 18, fontWeight: 600 }}
+      <div
+        className="absolute inset-0 bg-ink/40"
+        onClick={close}
+        aria-hidden
+      />
+      <div
+        className="relative w-full max-w-[430px] bg-card rounded-t-[28px] shadow-card pb-8 transition-transform duration-[280ms] ease-out"
+        style={{ transform: entered ? "translateY(0)" : "translateY(100%)" }}
       >
-        Remove @{username}?
-      </h3>
-      <p
-        className="text-soft text-center px-6 pb-5"
-        style={{ fontSize: 13, fontWeight: 400 }}
-      >
-        They won't appear in your friends leaderboard anymore.
-      </p>
-      <div className="px-5 flex flex-col gap-2">
-        <button
-          onClick={onConfirm}
-          className="press w-full h-12 rounded-pill text-orange bg-orange/10"
-          style={{ fontSize: 15, fontWeight: 600 }}
+        <div className="flex justify-center pt-3 pb-1">
+          <span className="block w-10 h-1 rounded-full bg-ink/15" />
+        </div>
+        <h3
+          className="text-ink px-5 pt-3 pb-2 text-center"
+          style={{ fontSize: 18, fontWeight: 600 }}
         >
-          Remove
-        </button>
-        <button
-          onClick={onCancel}
-          className="press w-full h-12 rounded-pill text-ink/70"
-          style={{ fontSize: 15, fontWeight: 500 }}
+          Remove @{username}?
+        </h3>
+        <p
+          className="text-soft text-center px-6 pb-5"
+          style={{ fontSize: 13, fontWeight: 400 }}
         >
-          Cancel
-        </button>
+          They won't appear in your friends leaderboard anymore.
+        </p>
+        <div className="px-5 flex flex-col gap-2">
+          <button
+            onClick={confirm}
+            className="press w-full h-12 rounded-pill text-orange bg-orange/10"
+            style={{ fontSize: 15, fontWeight: 600 }}
+          >
+            Remove
+          </button>
+          <button
+            onClick={close}
+            className="press w-full h-12 rounded-pill text-ink/70"
+            style={{ fontSize: 15, fontWeight: 500 }}
+          >
+            Cancel
+          </button>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default RankScreen;
