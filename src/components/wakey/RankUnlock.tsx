@@ -38,7 +38,16 @@ export const RankUnlock = ({ rank, onContinue }: RankUnlockProps) => {
           transition: "transform 400ms ease-out",
         }}
       >
-        <Mascot size={200} />
+        {rank.image ? (
+          <img
+            src={rank.image}
+            alt={`${rank.name} mascot`}
+            className="object-contain"
+            style={{ width: 200, height: 200 }}
+          />
+        ) : (
+          <Mascot size={200} />
+        )}
       </div>
 
       <div

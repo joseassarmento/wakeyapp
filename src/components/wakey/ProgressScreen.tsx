@@ -113,7 +113,16 @@ const RankSection = ({ mornings }: { mornings: number }) => {
             >
               Rank {current.id} · {current.name}
             </span>
-            <Mascot size={110} />
+            {current.image ? (
+              <img
+                src={current.image}
+                alt={`${current.name} mascot`}
+                className="object-contain"
+                style={{ height: 130 }}
+              />
+            ) : (
+              <Mascot size={110} />
+            )}
           </div>
           <div className="p-5">
             <div className="text-ink" style={{ fontSize: 22, fontWeight: 600 }}>
