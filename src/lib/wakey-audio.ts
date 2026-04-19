@@ -8,17 +8,43 @@ let activeGain: GainNode | null = null;
 let beepTimeoutId: number | null = null;
 let isLoopRunning = false;
 
+const logAudioState = (label: string) => {
+  console.log(`[wakey-audio] ${label}`, {
+    hasContext: !!activeAudioContext,
+    contextState: activeAudioContext?.state ?? "none",
+    hasSource: !!activeAlarmSource,
+    hasGain: !!activeGain,
+    isLoopRunning,
+  });
+};
+
 export const primeAudio = () => {
-  if (!activeAudioContext) {
-    const AC = (window.AudioContext || (window as any).webkitAudioContext);
-    if (AC) activeAudioContext = new AC();
+  if (!activeAudioContext || activeAudioContext.state === "closed") {
+    const AC = window.AudioContext || (window as typeof window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+    if (AC) {
+      activeAudioContext = new AC();
+      logAudioState("created AudioContext");
+    }
   }
+
   if (activeAudioContext && activeAudioContext.state === "suspended") {
-    activeAudioContext.resume();
+    activeAudioContext.resume().then(() => {
+      logAudioState("resumed AudioContext");
+    }).catch((error) => {
+      console.error("[wakey-audio] failed to resume AudioContext", error);
+    });
+  } else {
+    logAudioState("primeAudio noop / already ready");
   }
 };
 
 const scheduleNextBeep = () => {
+  console.log("[wakey-audio] scheduleNextBeep called", {
+    hasContext: !!activeAudioContext,
+    contextState: activeAudioContext?.state ?? "none",
+    isLoopRunning,
+  });
+
   if (!isLoopRunning || !activeAudioContext) return;
 
   // Tear down any previous oscillator before starting a new one.
@@ -42,6 +68,7 @@ const scheduleNextBeep = () => {
   osc.connect(activeGain);
   osc.start();
   activeAlarmSource = osc;
+  logAudioState("oscillator started");
 
   // 0.08s ON
   beepTimeoutId = window.setTimeout(() => {
@@ -56,14 +83,25 @@ const scheduleNextBeep = () => {
 };
 
 export const startAlarmSound = () => {
+  logAudioState("startAlarmSound before prime");
   primeAudio();
-  if (!activeAudioContext) return;
+  if (!activeAudioContext) {
+    console.warn("[wakey-audio] startAlarmSound aborted: no AudioContext available");
+    return;
+  }
   stopAlarmSound();
+  primeAudio();
+  if (!activeAudioContext) {
+    console.warn("[wakey-audio] startAlarmSound aborted after reset: no AudioContext available");
+    return;
+  }
   isLoopRunning = true;
+  logAudioState("startAlarmSound before first beep");
   scheduleNextBeep();
 };
 
 export const stopAlarmSound = () => {
+  logAudioState("stopAlarmSound begin");
   isLoopRunning = false;
   if (beepTimeoutId !== null) {
     clearTimeout(beepTimeoutId);
@@ -82,4 +120,5 @@ export const stopAlarmSound = () => {
     try { activeAudioContext.close(); } catch {}
     activeAudioContext = null;
   }
+  logAudioState("stopAlarmSound complete");
 };
