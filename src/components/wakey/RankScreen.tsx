@@ -14,18 +14,18 @@ interface Player {
   mornings: number;
 }
 
-const GLOBAL: Player[] = [
+const GLOBAL_BASE: Player[] = [
   { id: 1, name: "Aiko Tanaka", mornings: 412 },
   { id: 2, name: "Marco Reyes", mornings: 388 },
   { id: 3, name: "Lena Park", mornings: 356 },
-  { id: 4, name: "Pablo G.", mornings: 47 },
+  { id: 4, name: "__ME__", mornings: 47 },
   { id: 5, name: "Sara Ali", mornings: 41 },
   { id: 6, name: "Theo N.", mornings: 33 },
   { id: 7, name: "Mei Lin", mornings: 28 },
 ];
 
-const FRIENDS: Player[] = [
-  { id: 1, name: "Pablo G.", mornings: 47 },
+const FRIENDS_BASE: Player[] = [
+  { id: 1, name: "__ME__", mornings: 47 },
   { id: 2, name: "Sara Ali", mornings: 41 },
   { id: 3, name: "Theo N.", mornings: 33 },
   { id: 4, name: "Jamie K.", mornings: 19 },
@@ -36,7 +36,10 @@ const initials = (name: string) =>
 
 export const RankScreen = ({ user }: RankScreenProps = {}) => {
   const [tab, setTab] = useState<TabId>("global");
-  const list = tab === "global" ? GLOBAL : FRIENDS;
+  const meName = (user?.name?.trim() || "You");
+  const resolve = (p: Player): Player =>
+    p.name === "__ME__" ? { ...p, name: meName } : p;
+  const list = (tab === "global" ? GLOBAL_BASE : FRIENDS_BASE).map(resolve);
   const total = list.reduce((s, p) => s + p.mornings, 0);
 
   return (
