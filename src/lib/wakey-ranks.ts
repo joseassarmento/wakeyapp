@@ -1,4 +1,5 @@
 import rank1Snoozer from "@/assets/rank-1-snoozer.png";
+import rank2Waker from "@/assets/rank-2-waker.png";
 
 export interface Rank {
   id: number;
