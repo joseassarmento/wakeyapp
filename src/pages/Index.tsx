@@ -224,8 +224,9 @@ const Index = () => {
   const triggerDemo = () =>
     setFiring(alarms.find((a) => a.active) ?? alarms[0] ?? blankAlarm());
 
-  // First-launch onboarding gate: require a username before entering the app
-  if (!user.username) {
+  // First-launch onboarding gate: require a username before entering the app.
+  // Skip when arriving via NFC pod redirect so the success screen always wins.
+  if (!user.username && !STOPPED_FROM_URL) {
     return (
       <UsernameSetup
         onComplete={(name, username) => setUser({ ...user, name, username })}
