@@ -59,9 +59,19 @@ const Wheel = ({
     settleRef.current = window.setTimeout(() => {
       const i = Math.round(el.scrollTop / ITEM_H);
       const clamped = Math.max(0, Math.min(items.length - 1, i));
-      el.scrollTo({ top: clamped * ITEM_H, behavior: "smooth" });
+      if (Math.abs(el.scrollTop - clamped * ITEM_H) > 1) {
+        el.scrollTo({ top: clamped * ITEM_H, behavior: "smooth" });
+      }
       if (clamped !== index) onChange(clamped);
-    }, 90);
+    }, 120);
+  };
+
+  const handleItemClick = (i: number) => {
+    const el = ref.current;
+    if (el) {
+      el.scrollTo({ top: i * ITEM_H, behavior: "smooth" });
+    }
+    onChange(i);
   };
 
   return (
@@ -87,7 +97,7 @@ const Wheel = ({
             opacity: i === index ? 1 : 0.35,
             transition: "opacity 150ms",
           }}
-          onClick={() => onChange(i)}
+          onClick={() => handleItemClick(i)}
         >
           {format ? format(v) : v}
         </div>
