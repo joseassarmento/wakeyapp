@@ -1,6 +1,7 @@
 import rank1Snoozer from "@/assets/rank-1-snoozer.png";
 import rank2Waker from "@/assets/rank-2-waker.png";
 import rank3Riser from "@/assets/rank-3-riser.png";
+import rank4EarlyBird from "@/assets/rank-4-early-bird.png";
 
 export interface Rank {
   id: number;
@@ -53,6 +54,7 @@ export const RANKS: Rank[] = [
     color: "#FF9500",
     message: "50 mornings. You have a real streak now.",
     unlockMessage: "50 mornings. Seriously impressive.",
+    image: rank4EarlyBird,
   },
   {
     id: 5,
