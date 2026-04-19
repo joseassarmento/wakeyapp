@@ -7,6 +7,8 @@ import ProgressScreen from "@/components/wakey/ProgressScreen";
 import MeScreen from "@/components/wakey/MeScreen";
 import AlarmFiring from "@/components/wakey/AlarmFiring";
 import AlarmSuccess from "@/components/wakey/AlarmSuccess";
+import RankUnlock from "@/components/wakey/RankUnlock";
+import { Rank, detectNewUnlocks } from "@/lib/wakey-ranks";
 import {
   Alarm,
   loadAlarms,
@@ -40,11 +42,13 @@ const Index = () => {
 
   const [firing, setFiring] = useState<Alarm | null>(null);
   const [success, setSuccess] = useState<{ time: string } | null>(null);
+  const [unlockQueue, setUnlockQueue] = useState<Rank[]>([]);
 
   const [progress, setProgress] = useState<ProgressData>(() => loadProgress());
   const [user, setUser] = useState<UserProfile>(() => loadUser());
 
   const lastFireKeyRef = useRef<string | null>(null);
+  const pendingSuccessRef = useRef<{ time: string } | null>(null);
 
   // SEO basics
   useEffect(() => {
@@ -129,6 +133,7 @@ const Index = () => {
     const period = h >= 12 ? "PM" : "AM";
     const h12 = h % 12 === 0 ? 12 : h % 12;
     const label = `${h12}:${now.getMinutes().toString().padStart(2, "0")} ${period}`;
+    const newTotal = progress.totalMornings + 1;
     setProgress((p) => ({
       ...p,
       totalMornings: p.totalMornings + 1,
@@ -136,7 +141,16 @@ const Index = () => {
       lastWakeISO: now.toISOString(),
     }));
     setFiring(null);
-    setSuccess({ time: label });
+
+    // Detect any newly unlocked ranks based on the new total
+    const newly = detectNewUnlocks(newTotal);
+    if (newly.length > 0) {
+      setUnlockQueue(newly);
+    } else {
+      setSuccess({ time: label });
+    }
+    // Stash time for after unlock celebrations finish
+    pendingSuccessRef.current = { time: label };
   };
 
   const handleEmergency = () => {
@@ -196,6 +210,22 @@ const Index = () => {
           onSuccess={handleSuccess}
           onEmergencyExit={handleEmergency}
           emergencyExitsLeft={progress.emergencyExits}
+        />
+      )}
+
+      {unlockQueue.length > 0 && (
+        <RankUnlock
+          rank={unlockQueue[0]}
+          onContinue={() => {
+            setUnlockQueue((q) => {
+              const next = q.slice(1);
+              if (next.length === 0 && pendingSuccessRef.current) {
+                setSuccess(pendingSuccessRef.current);
+                pendingSuccessRef.current = null;
+              }
+              return next;
+            });
+          }}
         />
       )}
 
