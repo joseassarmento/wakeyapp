@@ -109,7 +109,7 @@ const AlarmCard = ({
       </button>
 
       <Toggle on={alarm.active} onChange={onToggle} />
-    </li>
+    </div>
   );
 };
 

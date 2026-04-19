@@ -28,12 +28,16 @@ export const ProgressScreen = ({ progress, user }: ProgressScreenProps) => {
 
       {/* Stat cards */}
       <div className="grid grid-cols-2 gap-2.5 mb-5">
-        <StatCard bg="bg-yellow" value={String(progress.totalMornings)} label="mornings" />
-        <StatCard bg="bg-card" value={String(progress.streak)} label="streak" />
+        <div className="animate-slide-up stagger-1">
+          <StatCard bg="bg-yellow" value={String(progress.totalMornings)} label="mornings" />
+        </div>
+        <div className="animate-slide-up stagger-2">
+          <StatCard bg="bg-card" value={String(progress.streak)} label="streak" />
+        </div>
       </div>
 
       {/* Heatmap */}
-      <div className="bg-card rounded-[24px] shadow-card p-5 mb-4">
+      <div className="bg-card rounded-[24px] shadow-card p-5 mb-4 animate-slide-up stagger-3">
         <div className="label-caps text-ink/50 mb-3">This week</div>
         <div className="flex justify-between">
           {DAYS.map((d, i) => {
@@ -81,7 +85,7 @@ const RankSection = ({ mornings }: { mornings: number }) => {
   const progressed = Math.min(1, Math.max(0, (mornings - current.min) / range));
 
   return (
-    <div className="mt-6">
+    <div className="mt-6 animate-slide-up stagger-4">
         <div className="label-caps text-ink/45 mb-2 px-1">Your rank</div>
         <div className="bg-card rounded-[24px] shadow-card overflow-hidden">
           <div

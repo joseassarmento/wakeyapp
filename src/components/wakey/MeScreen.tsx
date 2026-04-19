@@ -56,7 +56,7 @@ export const MeScreen = ({ user, onUserChange, progress }: MeScreenProps) => {
   return (
     <div className="pb-32 px-5 pt-8 animate-fade-in">
       {/* Avatar */}
-      <div className="flex flex-col items-center gap-2 mb-6">
+      <div className="flex flex-col items-center gap-2 mb-6 animate-scale-in">
         <button
           onClick={() => fileRef.current?.click()}
           className="press relative w-20 h-20 rounded-full overflow-hidden bg-yellow flex items-center justify-center text-ink"
@@ -124,7 +124,7 @@ export const MeScreen = ({ user, onUserChange, progress }: MeScreenProps) => {
 
       {/* Username locked row */}
       {user.username && (
-        <div className="bg-card rounded-[16px] shadow-card px-5 py-4 mb-2 flex items-center justify-between">
+        <div className="bg-card rounded-[16px] shadow-card px-5 py-4 mb-2 flex items-center justify-between animate-slide-up stagger-1">
           <div className="flex flex-col">
             <span
               className="text-ink/45"
@@ -154,7 +154,7 @@ export const MeScreen = ({ user, onUserChange, progress }: MeScreenProps) => {
         </div>
       )}
 
-      <div className="space-y-2">
+      <div className="space-y-2 animate-slide-up stagger-2">
         <Row
           label="Notifications"
           right={
