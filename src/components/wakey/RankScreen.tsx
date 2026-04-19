@@ -1,7 +1,12 @@
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { UserProfile } from "@/lib/wakey-storage";
 
 type TabId = "global" | "friends";
+
+interface RankScreenProps {
+  user?: UserProfile;
+}
 
 interface Player {
   id: number;
@@ -29,7 +34,7 @@ const FRIENDS: Player[] = [
 const initials = (name: string) =>
   name.split(" ").map((p) => p[0]).slice(0, 2).join("").toUpperCase();
 
-export const RankScreen = () => {
+export const RankScreen = ({ user }: RankScreenProps = {}) => {
   const [tab, setTab] = useState<TabId>("global");
   const list = tab === "global" ? GLOBAL : FRIENDS;
   const total = list.reduce((s, p) => s + p.mornings, 0);
@@ -85,11 +90,18 @@ export const RankScreen = () => {
                 {rank}
               </div>
               {tab === "friends" && (
-                <div
-                  className="w-[38px] h-[38px] rounded-full bg-surface flex items-center justify-center text-ink"
-                  style={{ fontSize: 13, fontWeight: 500 }}
-                >
-                  {initials(p.name)}
+                <div className="w-[38px] h-[38px] rounded-full bg-surface flex items-center justify-center text-ink overflow-hidden">
+                  {p.name === "Pablo G." && user?.avatar ? (
+                    <img
+                      src={user.avatar}
+                      alt={`${p.name}'s profile`}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <span style={{ fontSize: 13, fontWeight: 500 }}>
+                      {initials(p.name)}
+                    </span>
+                  )}
                 </div>
               )}
               <div className="flex-1 text-ink" style={{ fontSize: 15, fontWeight: 500 }}>

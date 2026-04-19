@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Pencil, ChevronRight } from "lucide-react";
+import { useRef, useState } from "react";
+import { Pencil, ChevronRight, Camera } from "lucide-react";
 import { UserProfile, ProgressData } from "@/lib/wakey-storage";
 
 interface MeScreenProps {
@@ -11,6 +11,7 @@ interface MeScreenProps {
 export const MeScreen = ({ user, onUserChange, progress }: MeScreenProps) => {
   const [editing, setEditing] = useState(false);
   const [tempName, setTempName] = useState(user.name);
+  const fileRef = useRef<HTMLInputElement | null>(null);
 
   const initial = user.name.charAt(0).toUpperCase() || "W";
 
@@ -19,16 +20,69 @@ export const MeScreen = ({ user, onUserChange, progress }: MeScreenProps) => {
     setEditing(false);
   };
 
+  const handleAvatarPick = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = typeof reader.result === "string" ? reader.result : "";
+      // Downscale to avoid bloating localStorage
+      const img = new Image();
+      img.onload = () => {
+        const max = 256;
+        const scale = Math.min(1, max / Math.max(img.width, img.height));
+        const w = Math.round(img.width * scale);
+        const h = Math.round(img.height * scale);
+        const canvas = document.createElement("canvas");
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) {
+          onUserChange({ ...user, avatar: result });
+          return;
+        }
+        ctx.drawImage(img, 0, 0, w, h);
+        const dataUrl = canvas.toDataURL("image/jpeg", 0.85);
+        onUserChange({ ...user, avatar: dataUrl });
+      };
+      img.src = result;
+    };
+    reader.readAsDataURL(file);
+    // reset so picking the same file again still triggers change
+    e.target.value = "";
+  };
+
   return (
     <div className="pb-32 px-5 pt-8 animate-fade-in">
       {/* Avatar */}
       <div className="flex flex-col items-center gap-2 mb-6">
-        <div
-          className="w-20 h-20 rounded-full bg-yellow flex items-center justify-center text-ink"
+        <button
+          onClick={() => fileRef.current?.click()}
+          className="press relative w-20 h-20 rounded-full overflow-hidden bg-yellow flex items-center justify-center text-ink"
           style={{ fontSize: 32, fontWeight: 600 }}
+          aria-label="Change profile picture"
         >
-          {initial}
-        </div>
+          {user.avatar ? (
+            <img
+              src={user.avatar}
+              alt={`${user.name}'s profile`}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            initial
+          )}
+          <span className="absolute bottom-0 right-0 w-6 h-6 rounded-full bg-ink text-card flex items-center justify-center shadow-card">
+            <Camera size={12} />
+          </span>
+        </button>
+        <input
+          ref={fileRef}
+          type="file"
+          accept="image/*"
+          onChange={handleAvatarPick}
+          className="hidden"
+        />
         <div className="flex items-center gap-2 mt-1">
           {editing ? (
             <input

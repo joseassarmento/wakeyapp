@@ -171,7 +171,7 @@ const Index = () => {
             </button>
           </>
         )}
-        {tab === "rank" && <RankScreen />}
+        {tab === "rank" && <RankScreen user={user} />}
         {tab === "progress" && <ProgressScreen progress={progress} user={user} />}
         {tab === "me" && (
           <MeScreen user={user} onUserChange={setUser} progress={progress} />
