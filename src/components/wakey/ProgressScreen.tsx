@@ -93,9 +93,7 @@ const RankSection = ({ mornings }: { mornings: number }) => {
   const progressed = Math.min(1, Math.max(0, (mornings - current.min) / range));
 
   return (
-    <>
-      {/* Current rank hero */}
-      <div className="mt-6">
+    <div className="mt-6">
         <div className="label-caps text-ink/45 mb-2 px-1">Your rank</div>
         <div className="bg-card rounded-[24px] shadow-card overflow-hidden">
           <div
@@ -174,90 +172,10 @@ const RankSection = ({ mornings }: { mornings: number }) => {
           </div>
         </div>
       </div>
-
-      {/* All ranks ladder */}
-      <div className="mt-6">
-        <div className="label-caps text-ink/45 mb-2 px-1">All ranks</div>
-        <ul className="space-y-2">
-          {RANKS.map((r) => {
-            const isCurrent = r.id === current.id;
-            const isPast = r.id < current.id;
-            const isFuture = r.id > current.id;
-            const gap = r.min - mornings;
-            const rangeLabel =
-              r.max === Infinity
-                ? `${r.min}+ mornings`
-                : `${r.min} – ${r.max} mornings`;
-            return (
-              <li
-                key={r.id}
-                className="rounded-[16px] shadow-card flex items-center gap-3 px-3.5 py-3"
-                style={{
-                  backgroundColor: isCurrent
-                    ? "#FFFBEA"
-                    : "hsl(var(--card))",
-                  opacity: isFuture ? 0.45 : 1,
-                }}
-              >
-                <div
-                  className="w-9 h-9 rounded-full flex items-center justify-center text-white shrink-0"
-                  style={{
-                    backgroundColor: r.color,
-                    fontSize: 14,
-                    fontWeight: 600,
-                  }}
-                >
-                  {r.id}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div
-                    className="text-ink truncate"
-                    style={{ fontSize: 15, fontWeight: 600 }}
-                  >
-                    {r.name}
-                  </div>
-                  <div
-                    className="text-soft"
-                    style={{ fontSize: 12, fontWeight: 400 }}
-                  >
-                    {rangeLabel}
-                  </div>
-                </div>
-                {isPast && (
-                  <span
-                    className="w-5 h-5 rounded-full bg-yellow flex items-center justify-center shrink-0"
-                    aria-label="Unlocked"
-                  >
-                    <Check size={12} className="text-ink" strokeWidth={3} />
-                  </span>
-                )}
-                {isCurrent && (
-                  <span
-                    className="bg-yellow rounded-pill px-2.5 py-1 text-ink shrink-0"
-                    style={{ fontSize: 11, fontWeight: 600 }}
-                  >
-                    Current
-                  </span>
-                )}
-                {isFuture && (
-                  <div className="flex flex-col items-end shrink-0">
-                    <span
-                      className="text-soft"
-                      style={{ fontSize: 13, fontWeight: 600 }}
-                    >
-                      –{gap} mornings
-                    </span>
-                    <Lock size={12} className="text-ink/35 mt-0.5" />
-                  </div>
-                )}
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-    </>
   );
 };
+
+
 
 const StatCard = ({
   bg,
