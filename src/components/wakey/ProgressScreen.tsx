@@ -87,7 +87,7 @@ const RankSection = ({ mornings }: { mornings: number }) => {
           <div
             className="relative flex items-center justify-center"
             style={{
-              height: 300,
+              height: 240,
               backgroundColor: `${current.color}26`, // 15% opacity
             }}
           >
