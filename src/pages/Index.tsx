@@ -1,24 +1,44 @@
 import { useEffect, useRef, useState } from "react";
 import BottomNav, { Tab } from "@/components/wakey/BottomNav";
-import AlarmScreen from "@/components/wakey/AlarmScreen";
+import AlarmList from "@/components/wakey/AlarmList";
+import AlarmEdit from "@/components/wakey/AlarmEdit";
 import RankScreen from "@/components/wakey/RankScreen";
 import ProgressScreen from "@/components/wakey/ProgressScreen";
 import MeScreen from "@/components/wakey/MeScreen";
 import AlarmFiring from "@/components/wakey/AlarmFiring";
 import AlarmSuccess from "@/components/wakey/AlarmSuccess";
 import {
-  loadAlarm,
+  Alarm,
+  loadAlarms,
+  saveAlarms,
   loadProgress,
   loadUser,
   saveProgress,
   saveUser,
+  newAlarmId,
   ProgressData,
   UserProfile,
 } from "@/lib/wakey-storage";
 
+const blankAlarm = (): Alarm => ({
+  id: newAlarmId(),
+  name: "",
+  time: "07:00",
+  days: [0, 1, 2, 3, 4],
+  ringtone: "Sunrise",
+  vibration: true,
+  active: true,
+});
+
 const Index = () => {
   const [tab, setTab] = useState<Tab>("alarm");
-  const [firing, setFiring] = useState(false);
+  const [alarms, setAlarms] = useState<Alarm[]>(() => loadAlarms());
+
+  const [editing, setEditing] = useState<{ alarm: Alarm; isNew: boolean } | null>(
+    null
+  );
+
+  const [firing, setFiring] = useState<Alarm | null>(null);
   const [success, setSuccess] = useState<{ time: string } | null>(null);
 
   const [progress, setProgress] = useState<ProgressData>(() => loadProgress());
@@ -51,33 +71,57 @@ const Index = () => {
     canon.setAttribute("href", window.location.origin + "/");
   }, []);
 
+  useEffect(() => saveAlarms(alarms), [alarms]);
   useEffect(() => saveProgress(progress), [progress]);
   useEffect(() => saveUser(user), [user]);
-
-  // Apply dark mode preference
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", user.darkMode);
-  }, [user.darkMode]);
 
   // Alarm check loop
   useEffect(() => {
     const check = () => {
-      const a = loadAlarm();
-      if (!a.enabled) return;
+      const list = loadAlarms();
       const now = new Date();
       const jsDay = now.getDay(); // 0=Sun..6=Sat
       const ourDay = (jsDay + 6) % 7; // 0=Mon..6=Sun
-      if (!a.days.includes(ourDay)) return;
-      if (now.getHours() !== a.hour || now.getMinutes() !== a.minute) return;
-      const key = `${now.toDateString()}-${a.hour}:${a.minute}`;
+      const hh = now.getHours();
+      const mm = now.getMinutes();
+      const nowTime = `${String(hh).padStart(2, "0")}:${String(mm).padStart(2, "0")}`;
+
+      const match = list.find(
+        (a) => a.active && a.days.includes(ourDay) && a.time === nowTime
+      );
+      if (!match) return;
+
+      const key = `${now.toDateString()}-${match.id}-${match.time}`;
       if (lastFireKeyRef.current === key) return;
       lastFireKeyRef.current = key;
-      setFiring(true);
+      setFiring(match);
     };
     check();
     const id = window.setInterval(check, 30000);
     return () => clearInterval(id);
   }, []);
+
+  // Alarm CRUD
+  const upsertAlarm = (a: Alarm) =>
+    setAlarms((list) => {
+      const idx = list.findIndex((x) => x.id === a.id);
+      if (idx === -1) return [...list, a];
+      const next = [...list];
+      next[idx] = a;
+      return next;
+    });
+
+  const deleteAlarm = (id: string) =>
+    setAlarms((list) => list.filter((x) => x.id !== id));
+
+  const toggleAlarm = (id: string, active: boolean) =>
+    setAlarms((list) => list.map((x) => (x.id === id ? { ...x, active } : x)));
+
+  const openNew = () => setEditing({ alarm: blankAlarm(), isNew: true });
+  const openEdit = (id: string) => {
+    const a = alarms.find((x) => x.id === id);
+    if (a) setEditing({ alarm: a, isNew: false });
+  };
 
   const handleSuccess = () => {
     const now = new Date();
@@ -91,7 +135,7 @@ const Index = () => {
       streak: p.streak + 1,
       lastWakeISO: now.toISOString(),
     }));
-    setFiring(false);
+    setFiring(null);
     setSuccess({ time: label });
   };
 
@@ -102,18 +146,24 @@ const Index = () => {
     }));
   };
 
-  // Demo trigger button (only visible on alarm tab) — helps users test without waiting
-  const triggerDemo = () => setFiring(true);
+  // Demo trigger — fires the first active alarm or a placeholder
+  const triggerDemo = () =>
+    setFiring(alarms.find((a) => a.active) ?? alarms[0] ?? blankAlarm());
 
   return (
     <div className="bg-background min-h-screen">
       <main className="app-shell bg-background">
         {tab === "alarm" && (
           <>
-            <AlarmScreen />
+            <AlarmList
+              alarms={alarms}
+              onToggle={toggleAlarm}
+              onOpen={openEdit}
+              onCreate={openNew}
+            />
             <button
               onClick={triggerDemo}
-              className="press fixed bottom-28 right-5 z-30 bg-ink text-card rounded-pill px-4 py-2 shadow-card"
+              className="press fixed bottom-44 right-5 z-30 bg-ink text-card rounded-pill px-4 py-2 shadow-card"
               style={{ fontSize: 12, fontWeight: 500 }}
               aria-label="Trigger demo alarm"
             >
@@ -130,8 +180,19 @@ const Index = () => {
         <BottomNav active={tab} onChange={setTab} />
       </main>
 
+      {editing && (
+        <AlarmEdit
+          initial={editing.alarm}
+          isNew={editing.isNew}
+          onClose={() => setEditing(null)}
+          onSave={upsertAlarm}
+          onDelete={deleteAlarm}
+        />
+      )}
+
       {firing && (
         <AlarmFiring
+          alarmName={firing.name}
           onSuccess={handleSuccess}
           onEmergencyExit={handleEmergency}
           emergencyExitsLeft={progress.emergencyExits}

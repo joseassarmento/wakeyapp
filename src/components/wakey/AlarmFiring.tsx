@@ -6,6 +6,7 @@ interface AlarmFiringProps {
   onSuccess: () => void;
   onEmergencyExit?: () => void;
   emergencyExitsLeft: number;
+  alarmName?: string;
 }
 
 type ScanState = "idle" | "scanning" | "unsupported";
@@ -14,6 +15,7 @@ export const AlarmFiring = ({
   onSuccess,
   onEmergencyExit,
   emergencyExitsLeft,
+  alarmName,
 }: AlarmFiringProps) => {
   const [state, setState] = useState<ScanState>("idle");
   const [error, setError] = useState<string | null>(null);
@@ -70,7 +72,7 @@ export const AlarmFiring = ({
       <div />
 
       {/* Mascot + text */}
-      <div className="flex flex-col items-center gap-8">
+      <div className="flex flex-col items-center gap-4">
         <Mascot variant="sleepy" size={300} />
         <h1
           className="text-ink text-center"
@@ -78,6 +80,11 @@ export const AlarmFiring = ({
         >
           Wake up!
         </h1>
+        {alarmName && (
+          <p className="text-ink/60 text-center" style={{ fontSize: 16 }}>
+            {alarmName}
+          </p>
+        )}
       </div>
 
       {/* Bottom area */}
