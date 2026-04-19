@@ -1,4 +1,5 @@
 import rank1Snoozer from "@/assets/rank-1-snoozer.png";
+import rank2Waker from "@/assets/rank-2-waker.png";
 
 export interface Rank {
   id: number;
@@ -31,6 +32,7 @@ export const RANKS: Rank[] = [
     color: "#FFCA28",
     message: "You got up. Most people never do.",
     unlockMessage: "You actually got up. Welcome.",
+    image: rank2Waker,
   },
   {
     id: 3,
