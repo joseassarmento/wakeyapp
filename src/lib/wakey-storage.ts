@@ -28,6 +28,8 @@ export interface UserProfile {
   podPaired: boolean;
   /** Data URL of the user's profile picture, or empty string */
   avatar: string;
+  /** Optional contact email */
+  email: string;
 }
 
 export const DAY_LABELS_SHORT = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
@@ -58,6 +60,7 @@ const DEFAULT_USER: UserProfile = {
   darkMode: false,
   podPaired: false,
   avatar: "",
+  email: "",
 };
 
 const DEFAULT_ALARMS: Alarm[] = [
