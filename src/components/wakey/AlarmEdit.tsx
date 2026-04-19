@@ -7,6 +7,11 @@ import {
   formatTime12,
 } from "@/lib/wakey-storage";
 import { primeAudio } from "@/lib/wakey-audio";
+import {
+  startRingtonePreview,
+  stopRingtonePreview,
+  RingtoneName,
+} from "@/lib/wakey-ringtones";
 import TimePickerSheet from "./TimePickerSheet";
 
 interface AlarmEditProps {
@@ -255,36 +260,29 @@ const RingtoneSheet = ({
   onClose: () => void;
 }) => {
   const [entered, setEntered] = useState(false);
+  const [previewing, setPreviewing] = useState<string | null>(null);
   useEffect(() => {
     requestAnimationFrame(() => setEntered(true));
+    return () => {
+      stopRingtonePreview();
+    };
   }, []);
   const close = () => {
+    stopRingtonePreview();
+    setPreviewing(null);
     setEntered(false);
     setTimeout(onClose, 280);
   };
 
   const preview = (name: string) => {
     primeAudio();
-    // Single short beep — different pitch per ringtone
-    const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
-    const freqMap: Record<string, number> = {
-      Sunrise: 740,
-      Bell: 880,
-      Digital: 1100,
-      Chime: 660,
-      Radar: 990,
-    };
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.type = "sine";
-    osc.frequency.value = freqMap[name] ?? 880;
-    gain.gain.setValueAtTime(0, ctx.currentTime);
-    gain.gain.linearRampToValueAtTime(0.25, ctx.currentTime + 0.02);
-    gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.4);
-    osc.connect(gain).connect(ctx.destination);
-    osc.start();
-    osc.stop(ctx.currentTime + 0.45);
-    setTimeout(() => ctx.close(), 600);
+    if (previewing === name) {
+      stopRingtonePreview();
+      setPreviewing(null);
+      return;
+    }
+    startRingtonePreview(name as RingtoneName);
+    setPreviewing(name);
   };
 
   return (
