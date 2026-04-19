@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, Check } from "lucide-react";
 import {
   Alarm,
@@ -7,6 +7,7 @@ import {
   formatTime12,
 } from "@/lib/wakey-storage";
 import { primeAudio } from "@/lib/wakey-audio";
+import TimePickerSheet from "./TimePickerSheet";
 
 interface AlarmEditProps {
   initial: Alarm;
@@ -32,7 +33,7 @@ export const AlarmEdit = ({
 }: AlarmEditProps) => {
   const [draft, setDraft] = useState<Alarm>(initial);
   const [ringtoneOpen, setRingtoneOpen] = useState(false);
-  const timeInputRef = useRef<HTMLInputElement | null>(null);
+  const [timeOpen, setTimeOpen] = useState(false);
   const [entered, setEntered] = useState(false);
 
   useEffect(() => {
@@ -63,15 +64,7 @@ export const AlarmEdit = ({
 
   const openTimePicker = () => {
     primeAudio();
-    const el = timeInputRef.current;
-    if (!el) return;
-    el.focus();
-    try {
-      el.showPicker?.();
-    } catch {
-      // showPicker can throw in cross-origin iframes — fall back to click
-    }
-    el.click();
+    setTimeOpen(true);
   };
 
   return (
@@ -125,15 +118,6 @@ export const AlarmEdit = ({
               {period}
             </span>
           </div>
-          <input
-            ref={timeInputRef}
-            type="time"
-            value={draft.time}
-            onChange={(e) => setDraft((s) => ({ ...s, time: e.target.value }))}
-            onClick={(e) => e.stopPropagation()}
-            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-            aria-label="Pick alarm time"
-          />
         </button>
 
         {/* Name */}
@@ -223,6 +207,15 @@ export const AlarmEdit = ({
           </div>
         )}
       </div>
+
+      {/* Time picker bottom sheet */}
+      {timeOpen && (
+        <TimePickerSheet
+          value={draft.time}
+          onConfirm={(v) => setDraft((s) => ({ ...s, time: v }))}
+          onClose={() => setTimeOpen(false)}
+        />
+      )}
 
       {/* Ringtone bottom sheet */}
       {ringtoneOpen && (
