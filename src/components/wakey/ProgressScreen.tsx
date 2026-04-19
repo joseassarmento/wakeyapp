@@ -172,7 +172,6 @@ const RankSection = ({ mornings }: { mornings: number }) => {
           </div>
         </div>
       </div>
-    </div>
   );
 };
 
