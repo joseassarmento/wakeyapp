@@ -26,15 +26,9 @@ export const ProgressScreen = ({ progress, user }: ProgressScreenProps) => {
       </h1>
 
       {/* Stat cards */}
-      <div className="grid grid-cols-3 gap-2.5 mb-5">
+      <div className="grid grid-cols-2 gap-2.5 mb-5">
         <StatCard bg="bg-yellow" value={String(progress.totalMornings)} label="mornings" />
         <StatCard bg="bg-card" value={String(progress.streak)} label="streak" />
-        <StatCard
-          bg="bg-ink"
-          value={`${progress.onTimePct}%`}
-          label="on time"
-          dark
-        />
       </div>
 
       {/* Heatmap */}
