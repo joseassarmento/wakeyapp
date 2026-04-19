@@ -220,9 +220,13 @@ const Index = () => {
     }));
   };
 
-  // Demo trigger — fires the first active alarm or a placeholder
-  const triggerDemo = () =>
+  // Demo trigger — fires the first active alarm or a placeholder.
+  // primeAudio() runs synchronously inside the click so the browser
+  // grants AudioContext permission via the user gesture.
+  const triggerDemo = () => {
+    primeAudio();
     setFiring(alarms.find((a) => a.active) ?? alarms[0] ?? blankAlarm());
+  };
 
   // First-launch onboarding gate: require a username before entering the app.
   // Skip when arriving via NFC pod redirect so the success screen always wins.
