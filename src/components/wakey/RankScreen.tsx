@@ -34,7 +34,7 @@ const FRIENDS: Player[] = [
 const initials = (name: string) =>
   name.split(" ").map((p) => p[0]).slice(0, 2).join("").toUpperCase();
 
-export const RankScreen = () => {
+export const RankScreen = ({ user }: RankScreenProps = {}) => {
   const [tab, setTab] = useState<TabId>("global");
   const list = tab === "global" ? GLOBAL : FRIENDS;
   const total = list.reduce((s, p) => s + p.mornings, 0);
