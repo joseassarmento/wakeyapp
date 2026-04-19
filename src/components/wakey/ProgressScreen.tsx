@@ -93,8 +93,7 @@ const RankSection = ({ mornings }: { mornings: number }) => {
   const progressed = Math.min(1, Math.max(0, (mornings - current.min) / range));
 
   return (
-      {/* Current rank hero */}
-      <div className="mt-6">
+    <div className="mt-6">
         <div className="label-caps text-ink/45 mb-2 px-1">Your rank</div>
         <div className="bg-card rounded-[24px] shadow-card overflow-hidden">
           <div
