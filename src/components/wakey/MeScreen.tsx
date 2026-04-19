@@ -70,18 +70,7 @@ export const MeScreen = ({ user, onUserChange, progress }: MeScreenProps) => {
             />
           }
         />
-        <Row
-          label="Dark mode"
-          right={
-            <Toggle
-              on={user.darkMode}
-              onChange={(v) => {
-                onUserChange({ ...user, darkMode: v });
-                document.documentElement.classList.toggle("dark", v);
-              }}
-            />
-          }
-        />
+        
         <Row
           label="Pod pairing"
           right={
