@@ -78,12 +78,14 @@ export const RankScreen = ({ user }: RankScreenProps = {}) => {
         {list.map((p, i) => {
           const rank = i + 1;
           const isFirst = rank === 1;
+          const isMe = p.name === meName;
           return (
             <li
               key={p.id}
               className={cn(
-                "rounded-[16px] shadow-card flex items-center gap-3 px-4 py-3",
-                isFirst ? "bg-yellow" : "bg-card"
+                "rounded-[16px] shadow-card flex items-center gap-3 px-4 py-3 transition-colors",
+                isFirst ? "bg-yellow" : "bg-card",
+                isMe && !isFirst && "ring-2 ring-yellow"
               )}
             >
               <div
@@ -94,7 +96,7 @@ export const RankScreen = ({ user }: RankScreenProps = {}) => {
               </div>
               {tab === "friends" && (
                 <div className="w-[38px] h-[38px] rounded-full bg-surface flex items-center justify-center text-ink overflow-hidden">
-                  {p.name === "Pablo G." && user?.avatar ? (
+                  {isMe && user?.avatar ? (
                     <img
                       src={user.avatar}
                       alt={`${p.name}'s profile`}
@@ -107,8 +109,16 @@ export const RankScreen = ({ user }: RankScreenProps = {}) => {
                   )}
                 </div>
               )}
-              <div className="flex-1 text-ink" style={{ fontSize: 15, fontWeight: 500 }}>
-                {p.name}
+              <div className="flex-1 text-ink flex items-center gap-2" style={{ fontSize: 15, fontWeight: 500 }}>
+                <span>{p.name}</span>
+                {isMe && (
+                  <span
+                    className="text-ink/60 bg-ink/10 rounded-pill px-2 py-0.5"
+                    style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.5px" }}
+                  >
+                    YOU
+                  </span>
+                )}
               </div>
               <div className="text-ink/70" style={{ fontSize: 14 }}>
                 {p.mornings}
