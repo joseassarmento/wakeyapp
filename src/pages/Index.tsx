@@ -21,6 +21,18 @@ const STOPPED_FROM_URL = (() => {
   return params.get("stopped") === "true";
 })();
 if (STOPPED_FROM_URL) {
+  // Signal any other open tab (the original alarm tab) to stop its audio
+  // BEFORE we tear down our own context. The 300ms delay in showing the
+  // success screen below gives the message time to reach the other tab.
+  if (typeof window !== "undefined" && "BroadcastChannel" in window) {
+    try {
+      const ch = new BroadcastChannel("wakey_alarm");
+      ch.postMessage("stop");
+      ch.close();
+    } catch (error) {
+      console.warn("[wakey] BroadcastChannel post failed", error);
+    }
+  }
   stopAlarmSound();
 }
 import {
@@ -55,16 +67,22 @@ const Index = () => {
   );
 
   const [firing, setFiring] = useState<Alarm | null>(null);
-  const [success, setSuccess] = useState<{ time: string } | null>(() => {
-    if (!STOPPED_FROM_URL) return null;
-    const now = new Date();
-    const h = now.getHours();
-    const period = h >= 12 ? "PM" : "AM";
-    const h12 = h % 12 === 0 ? 12 : h % 12;
-    return {
-      time: `${h12}:${now.getMinutes().toString().padStart(2, "0")} ${period}`,
-    };
-  });
+  // Defer the success screen briefly when arriving via ?stopped=true so the
+  // BroadcastChannel "stop" message has time to reach the original alarm tab.
+  const [success, setSuccess] = useState<{ time: string } | null>(null);
+  useEffect(() => {
+    if (!STOPPED_FROM_URL) return;
+    const t = window.setTimeout(() => {
+      const now = new Date();
+      const h = now.getHours();
+      const period = h >= 12 ? "PM" : "AM";
+      const h12 = h % 12 === 0 ? 12 : h % 12;
+      setSuccess({
+        time: `${h12}:${now.getMinutes().toString().padStart(2, "0")} ${period}`,
+      });
+    }, 300);
+    return () => clearTimeout(t);
+  }, []);
   const [unlockQueue, setUnlockQueue] = useState<Rank[]>([]);
 
   const [progress, setProgress] = useState<ProgressData>(() => loadProgress());
@@ -123,6 +141,30 @@ const Index = () => {
       return { ...p, weekly, streak };
     });
   }, []);
+
+  // Cross-tab stop signal: when another tab loads ?stopped=true, it broadcasts
+  // "stop" on the "wakey_alarm" channel. This tab then tears down its audio
+  // and jumps to the success screen — same end state as a local NFC tap.
+  useEffect(() => {
+    if (typeof window === "undefined" || !("BroadcastChannel" in window)) return;
+    const ch = new BroadcastChannel("wakey_alarm");
+    ch.onmessage = (event) => {
+      if (event.data !== "stop") return;
+      stopAlarmSound();
+      const now = new Date();
+      const h = now.getHours();
+      const period = h >= 12 ? "PM" : "AM";
+      const h12 = h % 12 === 0 ? 12 : h % 12;
+      const label = `${h12}:${now.getMinutes().toString().padStart(2, "0")} ${period}`;
+      // If an alarm was firing here, count it as a successful wake.
+      if (firing) {
+        handleSuccess();
+      } else {
+        setSuccess({ time: label });
+      }
+    };
+    return () => ch.close();
+  }, [firing]);
 
   // Alarm check loop
   useEffect(() => {

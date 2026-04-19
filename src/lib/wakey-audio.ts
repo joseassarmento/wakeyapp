@@ -103,6 +103,17 @@ export const startAlarmSound = () => {
 export const stopAlarmSound = () => {
   logAudioState("stopAlarmSound begin");
   isLoopRunning = false;
+
+  // Broadcast to any other open tabs so they also tear down their audio.
+  try {
+    if (typeof window !== "undefined" && "BroadcastChannel" in window) {
+      const ch = new BroadcastChannel("wakey_alarm");
+      ch.postMessage("stop");
+      ch.close();
+    }
+  } catch (error) {
+    console.warn("[wakey-audio] BroadcastChannel post failed", error);
+  }
   if (beepTimeoutId !== null) {
     clearTimeout(beepTimeoutId);
     beepTimeoutId = null;
