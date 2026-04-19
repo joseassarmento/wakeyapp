@@ -21,6 +21,18 @@ const STOPPED_FROM_URL = (() => {
   return params.get("stopped") === "true";
 })();
 if (STOPPED_FROM_URL) {
+  // Signal any other open tab (the original alarm tab) to stop its audio
+  // BEFORE we tear down our own context. The 300ms delay in showing the
+  // success screen below gives the message time to reach the other tab.
+  if (typeof window !== "undefined" && "BroadcastChannel" in window) {
+    try {
+      const ch = new BroadcastChannel("wakey_alarm");
+      ch.postMessage("stop");
+      ch.close();
+    } catch (error) {
+      console.warn("[wakey] BroadcastChannel post failed", error);
+    }
+  }
   stopAlarmSound();
 }
 import {
