@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Pencil, ChevronRight, Camera, Lock, Moon } from "lucide-react";
+import { Pencil, ChevronRight, Camera, Lock, Moon, Mail, Check } from "lucide-react";
 import { UserProfile, ProgressData } from "@/lib/wakey-storage";
 
 interface MeScreenProps {
@@ -11,7 +11,26 @@ interface MeScreenProps {
 export const MeScreen = ({ user, onUserChange, progress }: MeScreenProps) => {
   const [editing, setEditing] = useState(false);
   const [tempName, setTempName] = useState(user.name);
+  const [tempEmail, setTempEmail] = useState(user.email ?? "");
+  const [emailSaved, setEmailSaved] = useState(false);
   const fileRef = useRef<HTMLInputElement | null>(null);
+
+  // Keep local email synced if user changes externally
+  useEffect(() => {
+    setTempEmail(user.email ?? "");
+  }, [user.email]);
+
+  const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(tempEmail.trim());
+  const emailDirty = tempEmail.trim() !== (user.email ?? "").trim();
+
+  const saveEmail = () => {
+    if (!emailDirty) return;
+    if (tempEmail.trim() === "" || emailValid) {
+      onUserChange({ ...user, email: tempEmail.trim() });
+      setEmailSaved(true);
+      window.setTimeout(() => setEmailSaved(false), 1500);
+    }
+  };
 
   // Sync the dark class on <html> with the user's preference
   useEffect(() => {
@@ -158,6 +177,68 @@ export const MeScreen = ({ user, onUserChange, progress }: MeScreenProps) => {
           <Lock size={16} className="text-ink/35" />
         </div>
       )}
+
+      {/* Email field */}
+      <div className="bg-card rounded-[16px] shadow-card px-5 py-4 mb-2 animate-slide-up stagger-1">
+        <div className="flex items-center justify-between mb-1">
+          <span
+            className="text-ink/45"
+            style={{
+              fontSize: 10,
+              fontWeight: 500,
+              letterSpacing: "0.5px",
+              textTransform: "uppercase",
+            }}
+          >
+            Email
+          </span>
+          {emailSaved && (
+            <span
+              className="flex items-center gap-1 text-[hsl(140_60%_45%)]"
+              style={{ fontSize: 11, fontWeight: 500 }}
+            >
+              <Check size={12} strokeWidth={3} /> Saved
+            </span>
+          )}
+        </div>
+        <div className="flex items-center gap-2">
+          <Mail size={16} className="text-ink/40 shrink-0" />
+          <input
+            type="email"
+            inputMode="email"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
+            value={tempEmail}
+            onChange={(e) => setTempEmail(e.target.value)}
+            onBlur={saveEmail}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                (e.target as HTMLInputElement).blur();
+              }
+            }}
+            placeholder="you@example.com"
+            className="flex-1 bg-transparent outline-none text-ink placeholder:text-ink/35"
+            style={{ fontSize: 16, fontWeight: 500 }}
+          />
+        </div>
+        {tempEmail.trim() !== "" && !emailValid && (
+          <span
+            className="text-orange mt-1 block"
+            style={{ fontSize: 12, fontWeight: 500 }}
+          >
+            Enter a valid email address
+          </span>
+        )}
+        {tempEmail.trim() === "" && (
+          <span
+            className="text-ink/40 mt-1 block"
+            style={{ fontSize: 12, fontWeight: 400 }}
+          >
+            Used for account recovery and notifications
+          </span>
+        )}
+      </div>
 
       <div className="space-y-2 animate-slide-up stagger-2">
         <Row
