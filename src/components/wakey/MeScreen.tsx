@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Pencil, ChevronRight, Camera } from "lucide-react";
+import { Pencil, ChevronRight, Camera, Lock } from "lucide-react";
 import { UserProfile, ProgressData } from "@/lib/wakey-storage";
 
 interface MeScreenProps {
@@ -83,7 +83,7 @@ export const MeScreen = ({ user, onUserChange, progress }: MeScreenProps) => {
           onChange={handleAvatarPick}
           className="hidden"
         />
-        <div className="flex items-center gap-2 mt-1">
+        <div className="flex flex-col items-center gap-1 mt-1 w-full">
           {editing ? (
             <input
               autoFocus
@@ -95,7 +95,7 @@ export const MeScreen = ({ user, onUserChange, progress }: MeScreenProps) => {
               style={{ fontSize: 22, fontWeight: 600 }}
             />
           ) : (
-            <>
+            <div className="flex items-center gap-2">
               <span className="text-ink" style={{ fontSize: 22, fontWeight: 600 }}>
                 {user.name}
               </span>
@@ -109,10 +109,50 @@ export const MeScreen = ({ user, onUserChange, progress }: MeScreenProps) => {
               >
                 <Pencil size={16} />
               </button>
-            </>
+            </div>
+          )}
+          {user.username && (
+            <span
+              className="text-soft"
+              style={{ fontSize: 15, fontWeight: 400 }}
+            >
+              @{user.username}
+            </span>
           )}
         </div>
       </div>
+
+      {/* Username locked row */}
+      {user.username && (
+        <div className="bg-card rounded-[16px] shadow-card px-5 py-4 mb-2 flex items-center justify-between">
+          <div className="flex flex-col">
+            <span
+              className="text-ink/45"
+              style={{
+                fontSize: 10,
+                fontWeight: 500,
+                letterSpacing: "0.5px",
+                textTransform: "uppercase",
+              }}
+            >
+              Username
+            </span>
+            <span
+              className="text-ink mt-0.5"
+              style={{ fontSize: 16, fontWeight: 500 }}
+            >
+              @{user.username}
+            </span>
+            <span
+              className="text-ink/40 mt-1"
+              style={{ fontSize: 12, fontWeight: 400 }}
+            >
+              Username cannot be changed
+            </span>
+          </div>
+          <Lock size={16} className="text-ink/35" />
+        </div>
+      )}
 
       <div className="space-y-2">
         <Row
