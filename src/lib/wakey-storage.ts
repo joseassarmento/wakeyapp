@@ -24,6 +24,8 @@ export interface UserProfile {
   notifications: boolean;
   darkMode: boolean;
   podPaired: boolean;
+  /** Data URL of the user's profile picture, or empty string */
+  avatar: string;
 }
 
 export const DAY_LABELS_SHORT = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
