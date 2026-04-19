@@ -5,6 +5,7 @@ import rank4EarlyBird from "@/assets/rank-4-early-bird.png";
 import rank5SunChaser from "@/assets/rank-5-sun-chaser.png";
 import rank6MorningHero from "@/assets/rank-6-morning-hero.png";
 import rank7SunGod from "@/assets/rank-7-sun-god.png";
+import rank8Legend from "@/assets/rank-8-legend.png";
 
 export interface Rank {
   id: number;
@@ -97,6 +98,7 @@ export const RANKS: Rank[] = [
     color: "#1C1C1E",
     message: "1000 mornings. You are the alarm.",
     unlockMessage: "1000 mornings. You are the alarm.",
+    image: rank8Legend,
   },
 ];
 
