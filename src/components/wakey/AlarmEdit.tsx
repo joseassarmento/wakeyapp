@@ -63,7 +63,15 @@ export const AlarmEdit = ({
 
   const openTimePicker = () => {
     primeAudio();
-    timeInputRef.current?.showPicker?.() ?? timeInputRef.current?.click();
+    const el = timeInputRef.current;
+    if (!el) return;
+    el.focus();
+    try {
+      el.showPicker?.();
+    } catch {
+      // showPicker can throw in cross-origin iframes — fall back to click
+    }
+    el.click();
   };
 
   return (
@@ -122,9 +130,9 @@ export const AlarmEdit = ({
             type="time"
             value={draft.time}
             onChange={(e) => setDraft((s) => ({ ...s, time: e.target.value }))}
-            className="absolute opacity-0 pointer-events-none"
-            tabIndex={-1}
-            aria-hidden
+            onClick={(e) => e.stopPropagation()}
+            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+            aria-label="Pick alarm time"
           />
         </button>
 
