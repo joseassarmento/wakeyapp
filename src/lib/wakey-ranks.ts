@@ -32,6 +32,7 @@ export const RANKS: Rank[] = [
     color: "#FFCA28",
     message: "You got up. Most people never do.",
     unlockMessage: "You actually got up. Welcome.",
+    image: rank2Waker,
   },
   {
     id: 3,
