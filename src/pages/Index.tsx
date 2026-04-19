@@ -9,7 +9,20 @@ import AlarmFiring from "@/components/wakey/AlarmFiring";
 import AlarmSuccess from "@/components/wakey/AlarmSuccess";
 import RankUnlock from "@/components/wakey/RankUnlock";
 import UsernameSetup from "@/components/wakey/UsernameSetup";
+import { stopAlarmSound } from "@/lib/wakey-audio";
 import { Rank, detectNewUnlocks } from "@/lib/wakey-ranks";
+
+// Detect NFC-pod redirect (?stopped=true) at module load, before render.
+// This guarantees any in-flight alarm audio is silenced immediately and the
+// app boots straight into the success screen.
+const STOPPED_FROM_URL = (() => {
+  if (typeof window === "undefined") return false;
+  const params = new URLSearchParams(window.location.search);
+  return params.get("stopped") === "true";
+})();
+if (STOPPED_FROM_URL) {
+  stopAlarmSound();
+}
 import {
   Alarm,
   loadAlarms,
@@ -42,7 +55,16 @@ const Index = () => {
   );
 
   const [firing, setFiring] = useState<Alarm | null>(null);
-  const [success, setSuccess] = useState<{ time: string } | null>(null);
+  const [success, setSuccess] = useState<{ time: string } | null>(() => {
+    if (!STOPPED_FROM_URL) return null;
+    const now = new Date();
+    const h = now.getHours();
+    const period = h >= 12 ? "PM" : "AM";
+    const h12 = h % 12 === 0 ? 12 : h % 12;
+    return {
+      time: `${h12}:${now.getMinutes().toString().padStart(2, "0")} ${period}`,
+    };
+  });
   const [unlockQueue, setUnlockQueue] = useState<Rank[]>([]);
 
   const [progress, setProgress] = useState<ProgressData>(() => loadProgress());
@@ -105,6 +127,9 @@ const Index = () => {
   // Alarm check loop
   useEffect(() => {
     const check = () => {
+      // Don't open the firing modal if we landed via NFC redirect (?stopped=true)
+      // — the success screen is already showing.
+      if (STOPPED_FROM_URL && success) return;
       const list = loadAlarms();
       const now = new Date();
       const jsDay = now.getDay(); // 0=Sun..6=Sat
@@ -280,6 +305,11 @@ const Index = () => {
           onContinue={() => {
             setSuccess(null);
             setTab("alarm");
+            // If we arrived via ?stopped=true, clean the URL so refreshes
+            // don't keep re-triggering the success screen.
+            if (window.location.search) {
+              window.history.replaceState(null, "", window.location.pathname);
+            }
           }}
         />
       )}
