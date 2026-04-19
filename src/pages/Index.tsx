@@ -132,6 +132,7 @@ const Index = () => {
     const period = h >= 12 ? "PM" : "AM";
     const h12 = h % 12 === 0 ? 12 : h % 12;
     const label = `${h12}:${now.getMinutes().toString().padStart(2, "0")} ${period}`;
+    const newTotal = progress.totalMornings + 1;
     setProgress((p) => ({
       ...p,
       totalMornings: p.totalMornings + 1,
@@ -139,7 +140,16 @@ const Index = () => {
       lastWakeISO: now.toISOString(),
     }));
     setFiring(null);
-    setSuccess({ time: label });
+
+    // Detect any newly unlocked ranks based on the new total
+    const newly = detectNewUnlocks(newTotal);
+    if (newly.length > 0) {
+      setUnlockQueue(newly);
+    } else {
+      setSuccess({ time: label });
+    }
+    // Stash time for after unlock celebrations finish
+    pendingSuccessRef.current = { time: label };
   };
 
   const handleEmergency = () => {
