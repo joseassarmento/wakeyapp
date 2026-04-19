@@ -118,15 +118,6 @@ export const AlarmEdit = ({
               {period}
             </span>
           </div>
-          <input
-            ref={timeInputRef}
-            type="time"
-            value={draft.time}
-            onChange={(e) => setDraft((s) => ({ ...s, time: e.target.value }))}
-            onClick={(e) => e.stopPropagation()}
-            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-            aria-label="Pick alarm time"
-          />
         </button>
 
         {/* Name */}
