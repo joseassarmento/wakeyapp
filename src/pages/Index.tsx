@@ -127,6 +127,9 @@ const Index = () => {
   // Alarm check loop
   useEffect(() => {
     const check = () => {
+      // Don't open the firing modal if we landed via NFC redirect (?stopped=true)
+      // — the success screen is already showing.
+      if (STOPPED_FROM_URL && success) return;
       const list = loadAlarms();
       const now = new Date();
       const jsDay = now.getDay(); // 0=Sun..6=Sat
