@@ -138,10 +138,16 @@ const Index = () => {
     setProgress((p) => {
       const weekly = [...p.weekly];
       weekly[ourDay] = "done";
+      // Recompute streak: walk back from today; "done" extends, "missed" breaks.
+      let streak = 0;
+      for (let i = ourDay; i >= 0; i--) {
+        if (weekly[i] === "done") streak++;
+        else if (weekly[i] === "missed") break;
+      }
       return {
         ...p,
         totalMornings: p.totalMornings + 1,
-        streak: p.streak + 1,
+        streak,
         lastWakeISO: now.toISOString(),
         weekly,
       };
