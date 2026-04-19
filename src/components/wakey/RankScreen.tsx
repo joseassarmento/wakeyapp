@@ -90,11 +90,18 @@ export const RankScreen = ({ user }: RankScreenProps = {}) => {
                 {rank}
               </div>
               {tab === "friends" && (
-                <div
-                  className="w-[38px] h-[38px] rounded-full bg-surface flex items-center justify-center text-ink"
-                  style={{ fontSize: 13, fontWeight: 500 }}
-                >
-                  {initials(p.name)}
+                <div className="w-[38px] h-[38px] rounded-full bg-surface flex items-center justify-center text-ink overflow-hidden">
+                  {p.name === "Pablo G." && user?.avatar ? (
+                    <img
+                      src={user.avatar}
+                      alt={`${p.name}'s profile`}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <span style={{ fontSize: 13, fontWeight: 500 }}>
+                      {initials(p.name)}
+                    </span>
+                  )}
                 </div>
               )}
               <div className="flex-1 text-ink" style={{ fontSize: 15, fontWeight: 500 }}>
