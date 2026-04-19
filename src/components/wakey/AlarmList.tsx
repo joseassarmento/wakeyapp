@@ -35,13 +35,18 @@ export const AlarmList = ({ alarms, onToggle, onOpen, onCreate }: AlarmListProps
           </h2>
 
           <ul className="px-5 space-y-3">
-            {alarms.map((a) => (
-              <AlarmCard
+            {alarms.map((a, i) => (
+              <li
                 key={a.id}
-                alarm={a}
-                onOpen={() => onOpen(a.id)}
-                onToggle={(v) => onToggle(a.id, v)}
-              />
+                className="animate-slide-up"
+                style={{ animationDelay: `${Math.min(i, 6) * 40}ms` }}
+              >
+                <AlarmCard
+                  alarm={a}
+                  onOpen={() => onOpen(a.id)}
+                  onToggle={(v) => onToggle(a.id, v)}
+                />
+              </li>
             ))}
           </ul>
         </>
@@ -75,8 +80,8 @@ const AlarmCard = ({
   const dim = !alarm.active;
 
   return (
-    <li
-      className={`bg-card rounded-[20px] shadow-card flex items-center gap-3 px-5 py-4 press ${
+    <div
+      className={`bg-card rounded-[20px] shadow-card flex items-center gap-3 px-5 py-4 press transition-smooth ${
         dim ? "opacity-55" : ""
       }`}
     >
