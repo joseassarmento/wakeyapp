@@ -65,18 +65,6 @@ export const ProgressScreen = ({ progress, user }: ProgressScreenProps) => {
         </div>
       </div>
 
-      {/* Mascot card */}
-      <div className="bg-card rounded-[24px] shadow-card p-4 flex items-center gap-4">
-        <Mascot variant="happy" size={110} />
-        <div className="flex-1">
-          <div className="text-ink" style={{ fontSize: 15, fontWeight: 500 }}>
-            Keep going
-          </div>
-          <div className="text-soft" style={{ fontSize: 13 }}>
-            {motivational(progress.streak)}
-          </div>
-        </div>
-      </div>
 
       {/* Ranks section */}
       <RankSection mornings={progress.totalMornings} />
