@@ -136,6 +136,30 @@ const Index = () => {
     });
   }, []);
 
+  // Cross-tab stop signal: when another tab loads ?stopped=true, it broadcasts
+  // "stop" on the "wakey_alarm" channel. This tab then tears down its audio
+  // and jumps to the success screen — same end state as a local NFC tap.
+  useEffect(() => {
+    if (typeof window === "undefined" || !("BroadcastChannel" in window)) return;
+    const ch = new BroadcastChannel("wakey_alarm");
+    ch.onmessage = (event) => {
+      if (event.data !== "stop") return;
+      stopAlarmSound();
+      const now = new Date();
+      const h = now.getHours();
+      const period = h >= 12 ? "PM" : "AM";
+      const h12 = h % 12 === 0 ? 12 : h % 12;
+      const label = `${h12}:${now.getMinutes().toString().padStart(2, "0")} ${period}`;
+      // If an alarm was firing here, count it as a successful wake.
+      if (firing) {
+        handleSuccess();
+      } else {
+        setSuccess({ time: label });
+      }
+    };
+    return () => ch.close();
+  }, [firing]);
+
   // Alarm check loop
   useEffect(() => {
     const check = () => {
