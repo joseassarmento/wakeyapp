@@ -63,7 +63,15 @@ export const AlarmEdit = ({
 
   const openTimePicker = () => {
     primeAudio();
-    timeInputRef.current?.showPicker?.() ?? timeInputRef.current?.click();
+    const el = timeInputRef.current;
+    if (!el) return;
+    el.focus();
+    try {
+      el.showPicker?.();
+    } catch {
+      // showPicker can throw in cross-origin iframes — fall back to click
+    }
+    el.click();
   };
 
   return (
