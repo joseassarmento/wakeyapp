@@ -65,7 +65,7 @@ export const AlarmScreen = () => {
       {/* Mascot section */}
       <div className="pt-6 pb-2 flex justify-center">
         <div className="animate-float">
-          <Mascot variant="happy" size={170} />
+          <Mascot variant="happy" size={260} />
         </div>
       </div>
 

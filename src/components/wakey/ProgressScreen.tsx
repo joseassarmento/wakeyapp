@@ -72,7 +72,7 @@ export const ProgressScreen = ({ progress, user }: ProgressScreenProps) => {
 
       {/* Mascot card */}
       <div className="bg-card rounded-[24px] shadow-card p-4 flex items-center gap-4">
-        <Mascot variant="happy" size={80} />
+        <Mascot variant="happy" size={110} />
         <div className="flex-1">
           <div className="text-ink" style={{ fontSize: 15, fontWeight: 500 }}>
             Keep going
