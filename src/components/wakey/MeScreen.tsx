@@ -11,7 +11,26 @@ interface MeScreenProps {
 export const MeScreen = ({ user, onUserChange, progress }: MeScreenProps) => {
   const [editing, setEditing] = useState(false);
   const [tempName, setTempName] = useState(user.name);
+  const [tempEmail, setTempEmail] = useState(user.email ?? "");
+  const [emailSaved, setEmailSaved] = useState(false);
   const fileRef = useRef<HTMLInputElement | null>(null);
+
+  // Keep local email synced if user changes externally
+  useEffect(() => {
+    setTempEmail(user.email ?? "");
+  }, [user.email]);
+
+  const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(tempEmail.trim());
+  const emailDirty = tempEmail.trim() !== (user.email ?? "").trim();
+
+  const saveEmail = () => {
+    if (!emailDirty) return;
+    if (tempEmail.trim() === "" || emailValid) {
+      onUserChange({ ...user, email: tempEmail.trim() });
+      setEmailSaved(true);
+      window.setTimeout(() => setEmailSaved(false), 1500);
+    }
+  };
 
   // Sync the dark class on <html> with the user's preference
   useEffect(() => {
