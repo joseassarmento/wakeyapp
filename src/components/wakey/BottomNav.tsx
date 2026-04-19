@@ -18,7 +18,7 @@ const tabs: { id: Tab; label: string; Icon: typeof Bell }[] = [
 export const BottomNav = ({ active, onChange }: BottomNavProps) => {
   return (
     <nav
-      className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-[400px] bg-card rounded-[26px] shadow-card px-2 py-2 flex items-center justify-between z-40 animate-slide-up"
+      className="fixed bottom-4 inset-x-0 mx-auto w-[calc(100%-2rem)] max-w-[400px] bg-card rounded-[26px] shadow-card px-2 py-2 flex items-center justify-between z-40 animate-slide-up"
       aria-label="Primary"
     >
       {tabs.map(({ id, label, Icon }) => {
