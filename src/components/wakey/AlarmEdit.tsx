@@ -33,7 +33,7 @@ export const AlarmEdit = ({
 }: AlarmEditProps) => {
   const [draft, setDraft] = useState<Alarm>(initial);
   const [ringtoneOpen, setRingtoneOpen] = useState(false);
-  const timeInputRef = useRef<HTMLInputElement | null>(null);
+  const [timeOpen, setTimeOpen] = useState(false);
   const [entered, setEntered] = useState(false);
 
   useEffect(() => {
