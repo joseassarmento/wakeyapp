@@ -71,14 +71,18 @@ const scheduleNextBeep = () => {
     activeGain.connect(activeAudioContext.destination);
   }
 
-  // Two-note chime: E6 then C6
-  playDing(1318.51, 0, 0.6);
-  playDing(1046.5, 0.35, 0.7);
+  if (useSimpleTone) {
+    // Simple soft single ding at A5 (~880Hz), repeats every 1.2s.
+    playDing(880, 0, 0.7);
+    beepTimeoutId = window.setTimeout(scheduleNextBeep, 1200);
+  } else {
+    // Two-note chime: E6 then C6
+    playDing(1318.51, 0, 0.6);
+    playDing(1046.5, 0.35, 0.7);
+    beepTimeoutId = window.setTimeout(scheduleNextBeep, 1400);
+  }
 
   logAudioState("chime scheduled");
-
-  // Repeat the chime every 1.4s
-  beepTimeoutId = window.setTimeout(scheduleNextBeep, 1400);
 };
 
 export const startAlarmSound = () => {
