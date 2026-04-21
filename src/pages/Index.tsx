@@ -67,6 +67,7 @@ const Index = () => {
   );
 
   const [firing, setFiring] = useState<Alarm | null>(null);
+  const [firingIsDemo, setFiringIsDemo] = useState(false);
   // Defer the success screen briefly when arriving via ?stopped=true so the
   // BroadcastChannel "stop" message has time to reach the original alarm tab.
   const [success, setSuccess] = useState<{ time: string } | null>(null);
@@ -193,6 +194,7 @@ const Index = () => {
       const key = `${now.toDateString()}-${match.id}-${match.time}`;
       if (lastFireKeyRef.current === key) return;
       lastFireKeyRef.current = key;
+      setFiringIsDemo(false);
       setFiring(match);
     };
     check();
@@ -289,6 +291,7 @@ const Index = () => {
   // grants AudioContext permission via the user gesture.
   const triggerDemo = () => {
     primeAudio();
+    setFiringIsDemo(true);
     setFiring(alarms.find((a) => a.active) ?? alarms[0] ?? blankAlarm());
   };
 
@@ -345,6 +348,7 @@ const Index = () => {
       {firing && (
         <AlarmFiring
           alarmName={firing.name}
+          isDemo={firingIsDemo}
           onSuccess={handleSuccess}
           onEmergencyExit={handleEmergency}
           emergencyExitsLeft={progress.emergencyExits}
