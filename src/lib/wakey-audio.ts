@@ -85,7 +85,8 @@ const scheduleNextBeep = () => {
   logAudioState("chime scheduled");
 };
 
-export const startAlarmSound = () => {
+export const startAlarmSound = (options?: { simple?: boolean }) => {
+  useSimpleTone = !!options?.simple;
   logAudioState("startAlarmSound before prime");
   primeAudio();
   if (!activeAudioContext) {
