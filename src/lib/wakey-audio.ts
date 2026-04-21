@@ -7,6 +7,7 @@ let activeAlarmSource: OscillatorNode | null = null;
 let activeGain: GainNode | null = null;
 let beepTimeoutId: number | null = null;
 let isLoopRunning = false;
+let useSimpleTone = false;
 
 const logAudioState = (label: string) => {
   console.log(`[wakey-audio] ${label}`, {
