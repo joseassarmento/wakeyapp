@@ -194,6 +194,7 @@ const Index = () => {
       const key = `${now.toDateString()}-${match.id}-${match.time}`;
       if (lastFireKeyRef.current === key) return;
       lastFireKeyRef.current = key;
+      setFiringIsDemo(false);
       setFiring(match);
     };
     check();
