@@ -67,6 +67,7 @@ const Index = () => {
   );
 
   const [firing, setFiring] = useState<Alarm | null>(null);
+  const [firingIsDemo, setFiringIsDemo] = useState(false);
   // Defer the success screen briefly when arriving via ?stopped=true so the
   // BroadcastChannel "stop" message has time to reach the original alarm tab.
   const [success, setSuccess] = useState<{ time: string } | null>(null);
