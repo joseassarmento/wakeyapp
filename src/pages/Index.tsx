@@ -291,6 +291,7 @@ const Index = () => {
   // grants AudioContext permission via the user gesture.
   const triggerDemo = () => {
     primeAudio();
+    setFiringIsDemo(true);
     setFiring(alarms.find((a) => a.active) ?? alarms[0] ?? blankAlarm());
   };
 
