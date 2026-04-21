@@ -348,6 +348,7 @@ const Index = () => {
       {firing && (
         <AlarmFiring
           alarmName={firing.name}
+          isDemo={firingIsDemo}
           onSuccess={handleSuccess}
           onEmergencyExit={handleEmergency}
           emergencyExitsLeft={progress.emergencyExits}
