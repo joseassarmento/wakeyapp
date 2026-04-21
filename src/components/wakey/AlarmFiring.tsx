@@ -7,6 +7,7 @@ interface AlarmFiringProps {
   onEmergencyExit?: () => void;
   emergencyExitsLeft: number;
   alarmName?: string;
+  isDemo?: boolean;
 }
 
 type ScanState = "idle" | "scanning" | "unsupported";
@@ -16,13 +17,14 @@ export const AlarmFiring = ({
   onEmergencyExit,
   emergencyExitsLeft,
   alarmName,
+  isDemo,
 }: AlarmFiringProps) => {
   const [state, setState] = useState<ScanState>("idle");
   const [error, setError] = useState<string | null>(null);
   const [exiting, setExiting] = useState(false);
 
   useEffect(() => {
-    startAlarmSound();
+    startAlarmSound({ simple: isDemo });
     // Block scroll & back navigation while firing
     document.body.style.overflow = "hidden";
     const onPop = () => window.history.pushState(null, "", window.location.href);
@@ -33,7 +35,7 @@ export const AlarmFiring = ({
       document.body.style.overflow = "";
       window.removeEventListener("popstate", onPop);
     };
-  }, []);
+  }, [isDemo]);
 
   const finish = () => {
     setExiting(true);
