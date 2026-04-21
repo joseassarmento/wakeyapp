@@ -38,6 +38,23 @@ export const primeAudio = () => {
   }
 };
 
+// Plays one soft sine "ding" with a quick attack and long decay.
+const playDing = (freq: number, startOffset: number, duration: number) => {
+  if (!activeAudioContext || !activeGain) return;
+  const ctx = activeAudioContext;
+  const start = ctx.currentTime + startOffset;
+  const osc = ctx.createOscillator();
+  const noteGain = ctx.createGain();
+  osc.type = "sine";
+  osc.frequency.setValueAtTime(freq, start);
+  noteGain.gain.setValueAtTime(0, start);
+  noteGain.gain.linearRampToValueAtTime(0.9, start + 0.01);
+  noteGain.gain.exponentialRampToValueAtTime(0.001, start + duration);
+  osc.connect(noteGain).connect(activeGain);
+  osc.start(start);
+  osc.stop(start + duration + 0.05);
+};
+
 const scheduleNextBeep = () => {
   console.log("[wakey-audio] scheduleNextBeep called", {
     hasContext: !!activeAudioContext,
@@ -47,39 +64,20 @@ const scheduleNextBeep = () => {
 
   if (!isLoopRunning || !activeAudioContext) return;
 
-  // Tear down any previous oscillator before starting a new one.
-  if (activeAlarmSource) {
-    try { activeAlarmSource.stop(); } catch {}
-    try { activeAlarmSource.disconnect(); } catch {}
-    activeAlarmSource = null;
-  }
-
-  const ctx = activeAudioContext;
-  const osc = ctx.createOscillator();
-  osc.type = "square";
-  osc.frequency.setValueAtTime(880, ctx.currentTime);
-
   if (!activeGain) {
-    activeGain = ctx.createGain();
-    activeGain.gain.value = 0.8;
-    activeGain.connect(ctx.destination);
+    activeGain = activeAudioContext.createGain();
+    activeGain.gain.value = 0.6;
+    activeGain.connect(activeAudioContext.destination);
   }
 
-  osc.connect(activeGain);
-  osc.start();
-  activeAlarmSource = osc;
-  logAudioState("oscillator started");
+  // Two-note chime: E6 then C6
+  playDing(1318.51, 0, 0.6);
+  playDing(1046.5, 0.35, 0.7);
 
-  // 0.08s ON
-  beepTimeoutId = window.setTimeout(() => {
-    if (activeAlarmSource) {
-      try { activeAlarmSource.stop(); } catch {}
-      try { activeAlarmSource.disconnect(); } catch {}
-      activeAlarmSource = null;
-    }
-    // 0.08s OFF, then loop
-    beepTimeoutId = window.setTimeout(scheduleNextBeep, 80);
-  }, 80);
+  logAudioState("chime scheduled");
+
+  // Repeat the chime every 1.4s
+  beepTimeoutId = window.setTimeout(scheduleNextBeep, 1400);
 };
 
 export const startAlarmSound = () => {
