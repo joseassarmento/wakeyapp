@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Mascot from "./Mascot";
-import { startAlarmSound, stopAlarmSound } from "@/lib/wakey-audio";
+import { startAlarmSound, stopAlarmSound, playSuccessChime } from "@/lib/wakey-audio";
 
 interface AlarmFiringProps {
   onSuccess: () => void;
@@ -40,6 +40,7 @@ export const AlarmFiring = ({
   const finish = () => {
     setExiting(true);
     stopAlarmSound();
+    if (isDemo) playSuccessChime();
     setTimeout(onSuccess, 380);
   };
 

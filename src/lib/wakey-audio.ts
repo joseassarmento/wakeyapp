@@ -104,6 +104,44 @@ export const startAlarmSound = (options?: { simple?: boolean }) => {
   scheduleNextBeep();
 };
 
+// Plays a cheerful ascending arpeggio when the alarm is successfully dismissed.
+export const playSuccessChime = () => {
+  try {
+    const AC = window.AudioContext || (window as typeof window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+    if (!AC) return;
+    const ctx = new AC();
+    const masterGain = ctx.createGain();
+    masterGain.gain.value = 0.5;
+    masterGain.connect(ctx.destination);
+
+    // Happy major arpeggio: C5, E5, G5, C6
+    const notes = [523.25, 659.25, 783.99, 1046.5];
+    const noteDuration = 0.35;
+    const noteSpacing = 0.12;
+
+    notes.forEach((freq, i) => {
+      const start = ctx.currentTime + i * noteSpacing;
+      const osc = ctx.createOscillator();
+      const noteGain = ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(freq, start);
+      noteGain.gain.setValueAtTime(0, start);
+      noteGain.gain.linearRampToValueAtTime(0.9, start + 0.015);
+      noteGain.gain.exponentialRampToValueAtTime(0.001, start + noteDuration);
+      osc.connect(noteGain).connect(masterGain);
+      osc.start(start);
+      osc.stop(start + noteDuration + 0.05);
+    });
+
+    // Close context after the chime finishes
+    setTimeout(() => {
+      try { ctx.close(); } catch {}
+    }, (notes.length * noteSpacing + noteDuration + 0.2) * 1000);
+  } catch (error) {
+    console.warn("[wakey-audio] playSuccessChime failed", error);
+  }
+};
+
 export const stopAlarmSound = () => {
   logAudioState("stopAlarmSound begin");
   isLoopRunning = false;
