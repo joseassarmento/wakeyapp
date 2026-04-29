@@ -158,6 +158,7 @@ const Index = () => {
     ch.onmessage = (event) => {
       if (event.data !== "stop") return;
       stopAlarmSound();
+      playSuccessChime();
       const now = new Date();
       const h = now.getHours();
       const period = h >= 12 ? "PM" : "AM";
