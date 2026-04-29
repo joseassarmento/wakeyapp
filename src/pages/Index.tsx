@@ -34,7 +34,7 @@ if (STOPPED_FROM_URL) {
     }
   }
   stopAlarmSound();
-}
+  playSuccessChime();
 import {
   Alarm,
   loadAlarms,
