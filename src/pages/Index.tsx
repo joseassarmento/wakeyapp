@@ -9,7 +9,7 @@ import AlarmFiring from "@/components/wakey/AlarmFiring";
 import AlarmSuccess from "@/components/wakey/AlarmSuccess";
 import RankUnlock from "@/components/wakey/RankUnlock";
 import UsernameSetup from "@/components/wakey/UsernameSetup";
-import { primeAudio, stopAlarmSound } from "@/lib/wakey-audio";
+import { primeAudio, stopAlarmSound, playSuccessChime } from "@/lib/wakey-audio";
 import { Rank, detectNewUnlocks } from "@/lib/wakey-ranks";
 
 // Detect NFC-pod redirect (?stopped=true) at module load, before render.
